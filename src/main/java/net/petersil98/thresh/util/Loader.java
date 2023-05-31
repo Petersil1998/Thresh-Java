@@ -26,7 +26,8 @@ import java.util.stream.Collectors;
 
 public class Loader {
     
-    private static final String BASE_PATH = System.getProperty("user.dir") + File.separator + "thresh-java" + File.separator;
+    private static final String BASE_PATH = System.getProperty("user.dir") + File.separator + "data" + File.separator;
+    private static final String DATA_FOLDER = "data" + File.separator;
 
     private static final String RUNE_STATS_FILE_PATH = BASE_PATH + "runeStats.json";
     private static final String RUNES_AND_RUNE_STYLES_FILE_PATH = BASE_PATH  + "runes.json";
@@ -72,6 +73,7 @@ public class Loader {
 
     private static void createFilesIfNotExistent() {
         try {
+            new File(DATA_FOLDER).mkdirs();
             new File(RUNE_STATS_FILE_PATH).createNewFile();
             new File(RUNES_AND_RUNE_STYLES_FILE_PATH).createNewFile();
             new File(SETTINGS).createNewFile();
@@ -81,6 +83,7 @@ public class Loader {
             new File(ITEMS_FILE_PATH).createNewFile();
             new File(SUMMONER_SPELLS_FILE_PATH).createNewFile();
             new File(CHALLENGES_FILE_PATH).createNewFile();
+            new File(SETTINGS).createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
