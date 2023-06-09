@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import net.petersil98.thresh.constant.RankedQueue;
 import net.petersil98.thresh.http.RiotAPIRequest;
 import net.petersil98.thresh.model.game.match.MatchDetails;
+import net.petersil98.thresh.model.league.RankEntry;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -33,7 +34,7 @@ public class Summoner {
 
     private List<ChampionMastery> championMasteries;
 
-    private Rank rankSoloDuo, rankFlex5v5;
+    private RankEntry rankSoloDuo, rankFlex5v5, rankTftDoubleUp;
 
     private Account account;
 
@@ -101,14 +102,19 @@ public class Summoner {
         return this.getChampionMasteries().stream().mapToInt(ChampionMastery::getChampionPoints).sum();
     }
 
-    public Rank getRankSoloDuo() {
+    public RankEntry getRankSoloDuo() {
         this.initRanks();
         return this.rankSoloDuo;
     }
 
-    public Rank getRankFlex5v5() {
+    public RankEntry getRankFlex5v5() {
         this.initRanks();
         return this.rankFlex5v5;
+    }
+
+    public RankEntry getRankTftDoubleUp() {
+        this.initRanks();
+        return this.rankTftDoubleUp;
     }
 
     public Account getAccount() {
@@ -123,10 +129,11 @@ public class Summoner {
     }
 
     private void initRanks() {
-        if(this.rankSoloDuo == null || this.rankFlex5v5 == null) {
-            List<Rank> ranks = RiotAPIRequest.requestLoLLeagueEndpoint("entries/by-summoner/" + this.id, TypeFactory.defaultInstance().constructCollectionType(List.class, Rank.class));
-            this.rankSoloDuo = ranks.stream().filter(rank -> rank.getQueueType().equals(RankedQueue.SOLO_DUO.toString())).findFirst().orElse(Rank.UNRANKED);
-            this.rankFlex5v5 = ranks.stream().filter(rank -> rank.getQueueType().equals(RankedQueue.FLEX.toString())).findFirst().orElse(Rank.UNRANKED);
+        if(this.rankSoloDuo == null || this.rankFlex5v5 == null || this.rankTftDoubleUp == null) {
+            List<RankEntry> ranks = RiotAPIRequest.requestLoLLeagueEndpoint("entries/by-summoner/" + this.id, TypeFactory.defaultInstance().constructCollectionType(List.class, RankEntry.class));
+            this.rankSoloDuo = ranks.stream().filter(rank -> rank.getQueueType().equals(RankedQueue.RANKED_SOLO_5x5)).findFirst().orElse(RankEntry.UNRANKED);
+            this.rankFlex5v5 = ranks.stream().filter(rank -> rank.getQueueType().equals(RankedQueue.RANKED_FLEX_SR)).findFirst().orElse(RankEntry.UNRANKED);
+            this.rankTftDoubleUp = ranks.stream().filter(rank -> rank.getQueueType().equals(RankedQueue.RANKED_TFT_DOUBLE_UP)).findFirst().orElse(RankEntry.UNRANKED);
         }
     }
 

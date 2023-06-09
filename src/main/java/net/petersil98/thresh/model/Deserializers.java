@@ -75,8 +75,8 @@ public class Deserializers {
         @Override
         public ActiveGame deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
             JsonNode root = jp.getCodec().readTree(jp);
-            List<Participant> participants = MAPPER.reader(TypeFactory.defaultInstance().constructCollectionType(List.class, Participant.class)).readValue(root.get("participants"));
-            List<Ban> bans = MAPPER.reader(TypeFactory.defaultInstance().constructCollectionType(List.class, Ban.class)).readValue(root.get("bannedChampions"));
+            List<Participant> participants = MAPPER.readerFor(TypeFactory.defaultInstance().constructCollectionType(List.class, Participant.class)).readValue(root.get("participants"));
+            List<Ban> bans = MAPPER.readerFor(TypeFactory.defaultInstance().constructCollectionType(List.class, Ban.class)).readValue(root.get("bannedChampions"));
             return new ActiveGame(root.get("gameId").asLong(), Maps.getMap(root.get("mapId").asInt()), root.get("gameMode").asText(),
                     root.get("gameType").asText(), QueueTypes.getQueueType(root.get("gameQueueConfigId").asInt()),
                     participants.stream().filter(participant -> participant.getTeamId() == 100).toList(),
@@ -311,8 +311,8 @@ public class Deserializers {
         public MatchDetails deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
             JsonNode root = jp.getCodec().readTree(jp);
             JsonNode details = root.get("info");
-            List<MatchParticipant> participants = MAPPER.reader(TypeFactory.defaultInstance().constructCollectionType(List.class, MatchParticipant.class)).readValue(details.get("participants"));
-            List<Team> teams = MAPPER.reader(TypeFactory.defaultInstance().constructCollectionType(List.class, Team.class)).readValue(details.get("teams"));
+            List<MatchParticipant> participants = MAPPER.readerFor(TypeFactory.defaultInstance().constructCollectionType(List.class, MatchParticipant.class)).readValue(details.get("participants"));
+            List<Team> teams = MAPPER.readerFor(TypeFactory.defaultInstance().constructCollectionType(List.class, Team.class)).readValue(details.get("teams"));
 
             return new MatchDetails(
                     details.get("gameCreation").asLong(),
@@ -339,7 +339,7 @@ public class Deserializers {
         @Override
         public Team deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
             JsonNode root = jp.getCodec().readTree(jp);
-            ObjectReader reader = MAPPER.reader(Objective.class);
+            ObjectReader reader = MAPPER.readerFor(Objective.class);
             JsonNode objectives = root.get("objectives");
 
             Map<Integer, Champion> bans = new HashMap<>();
@@ -366,7 +366,7 @@ public class Deserializers {
             JsonNode root = jp.getCodec().readTree(jp);
             JsonNode info = root.get("info");
 
-            List<TimelineParticipant> participants = MAPPER.reader(TypeFactory.defaultInstance().constructCollectionType(List.class, TimelineParticipant.class)).readValue(info.get("participants"));
+            List<TimelineParticipant> participants = MAPPER.readerFor(TypeFactory.defaultInstance().constructCollectionType(List.class, TimelineParticipant.class)).readValue(info.get("participants"));
             List<TimelineFrame> frames = new ArrayList<>();
             for(JsonNode frameNode: info.get("frames")) {
                 List<TimelineEvent> events = new ArrayList<>();
@@ -376,7 +376,7 @@ public class Deserializers {
                 Map<Integer, ParticipantFrameData> participantFrames = new HashMap<>();
                 for (Iterator<String> it = frameNode.get("participantFrames").fieldNames(); it.hasNext();) {
                     String fieldName = it.next();
-                    participantFrames.put(Integer.parseInt(fieldName), MAPPER.reader(ParticipantFrameData.class).readValue(frameNode.get("participantFrames").get(fieldName)));
+                    participantFrames.put(Integer.parseInt(fieldName), MAPPER.readerFor(ParticipantFrameData.class).readValue(frameNode.get("participantFrames").get(fieldName)));
                 }
                 frames.add(new TimelineFrame(frameNode.get("timestamp").asInt(), events, participantFrames));
             }
@@ -395,7 +395,7 @@ public class Deserializers {
                             event.get("bounty").asInt(), BuildingKill.BuildingType.valueOf(event.get("buildingType").asText()),
                             getParticipantFromField(event, "killerId", participants),
                             LaneType.valueOf(event.get("laneType").asText()),
-                            MAPPER.reader(Point.class).readValue(event.get("position")), event.get("teamId").asInt(),
+                            MAPPER.readerFor(Point.class).readValue(event.get("position")), event.get("teamId").asInt(),
                             event.has("towerType") ? BuildingKill.TowerType.valueOf(event.get("towerType").asText()) : null);
                 }
                 case CHAMPION_KILL -> {
@@ -410,7 +410,7 @@ public class Deserializers {
                     return new ChampionKill(event.get("timestamp").asLong(), type, getAssistingParticipants(event, participants),
                             event.get("bounty").asInt(), event.get("killStreakLength").asInt(),
                             getParticipantFromField(event, "killerId", participants),
-                            MAPPER.reader(Point.class).readValue(event.get("position")), event.get("shutdownBounty").asInt(),
+                            MAPPER.readerFor(Point.class).readValue(event.get("position")), event.get("shutdownBounty").asInt(),
                             damageDealt, damageReceived,
                             getParticipantFromField(event, "victimId", participants));
                 }
@@ -419,7 +419,7 @@ public class Deserializers {
                             ChampionSpecialKill.KillType.valueOf(event.get("killType").asText()),
                             getParticipantFromField(event, "killerId", participants),
                             event.has("multiKillLength") ? event.get("multiKillLength").asInt() : 1,
-                            MAPPER.reader(Point.class).readValue(event.get("position")));
+                            MAPPER.readerFor(Point.class).readValue(event.get("position")));
                 }
                 case CHAMPION_TRANSFORM -> {
                     return new ChampionTransform(event.get("timestamp").asLong(), type,
@@ -436,7 +436,7 @@ public class Deserializers {
                             event.get("bounty").asInt(), getParticipantFromField(event, "killerId", participants),
                             event.get("killerTeamId").asInt(), EliteMonsterKill.MonsterType.valueOf(event.get("monsterType").asText()),
                             event.has("monsterSubType") ? EliteMonsterKill.MonsterSubType.valueOf(event.get("monsterSubType").asText()) : null,
-                            MAPPER.reader(Point.class).readValue(event.get("position")));
+                            MAPPER.readerFor(Point.class).readValue(event.get("position")));
                 }
                 case GAME_END -> {
                     return new GameEnd(event.get("timestamp").asLong(), type, event.get("gameId").asLong(),
@@ -481,17 +481,17 @@ public class Deserializers {
                     return new TurretPlateDestroyed(event.get("timestamp").asLong(), type,
                             getParticipantFromField(event, "killerId", participants),
                             LaneType.valueOf(event.get("laneType").asText()),
-                            MAPPER.reader(Point.class).readValue(event.get("position")), event.get("teamId").asInt());
+                            MAPPER.readerFor(Point.class).readValue(event.get("position")), event.get("teamId").asInt());
                 }
                 case WARD_KILL -> {
                     return new WardKill(event.get("timestamp").asLong(), type,
                             getParticipantFromField(event, "killerId", participants),
-                            WardKill.WardType.valueOf(event.get("wardType").asText()));
+                            WardType.valueOf(event.get("wardType").asText()));
                 }
                 case WARD_PLACED -> {
                     return new WardPlaced(event.get("timestamp").asLong(), type,
                             getParticipantFromField(event, "creatorId", participants),
-                            WardKill.WardType.valueOf(event.get("wardType").asText()));
+                            WardType.valueOf(event.get("wardType").asText()));
                 }
                 default -> throw new IllegalArgumentException("Unknown event type \"" + type + "\" in match timeline");
             }
