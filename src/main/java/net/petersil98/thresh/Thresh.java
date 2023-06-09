@@ -1,10 +1,14 @@
 package net.petersil98.thresh;
 
 import net.petersil98.thresh.collection.*;
+import net.petersil98.thresh.constant.RankedDivision;
+import net.petersil98.thresh.constant.RankedQueue;
 import net.petersil98.thresh.constant.RankedTier;
 import net.petersil98.thresh.model.game.match.MatchDetails;
 import net.petersil98.thresh.model.game.match.timeline.Timeline;
 import net.petersil98.thresh.model.game.spectator.ActiveGame;
+import net.petersil98.thresh.model.league.League;
+import net.petersil98.thresh.model.league.RankEntry;
 import net.petersil98.thresh.model.summoner.Summoner;
 import net.petersil98.thresh.util.EncryptionUtil;
 import net.petersil98.thresh.util.Loader;
@@ -23,12 +27,12 @@ public class Thresh {
     public static final Logger LOGGER = LogManager.getLogger("THRESH");
 
     public static void main(String[] args) {
-        Settings.setAPIKey(() -> EncryptionUtil.encrypt("<API_KEY>"));
+        Settings.setAPIKey(() -> EncryptionUtil.encrypt(System.getenv("API_KEY")));
         Settings.setDecryptor(EncryptionUtil::decrypt);
         Settings.setServerConfig(ServerConfig.EUW_CONFIG);
         Settings.setLanguage(Language.EN_US);
         Loader.init();
-        Summoner me = Summoner.getSummonerByName("faker");
+        Summoner me = Summoner.getSummonerByName("Petersil98");
         List<MatchDetails> matchHistory = MatchDetails.getMatchHistory(me, Map.of());
         Timeline timeline = matchHistory.get(1).getTimeline();
         matchHistory.stream().map(MatchDetails::getQueueType).forEach(System.out::println);
@@ -39,6 +43,9 @@ public class Thresh {
         System.out.println(me.getRankFlex5v5());
         System.out.println(me.getAccount());
         System.out.println(me);
+        League league = League.getLeagueById(me.getRankSoloDuo().getLeagueId());
+        League challengers = League.getChallengerLeague(RankedQueue.RANKED_SOLO_5x5);
+        List<RankEntry> leagueEntries = League.getRankEntries(RankedDivision.I, RankedTier.BRONZE, RankedQueue.RANKED_FLEX_SR, 2);
         MatchDetails details = MatchDetails.getMatchDetails("EUW1_987654321");
         System.out.println(Util.getChallengeIconURL(Challenges.getChallenges().stream().filter(challenge -> !challenge.getLevelToIconPath().isEmpty()).findAny().get(), RankedTier.BRONZE));
         ActiveGame game = ActiveGame.ofSummoner(Summoner.getSummonerByName("madlife"));

@@ -1,9 +1,11 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'net.petersil98'
-version '1.0-SNAPSHOT'
+version '1.0'
+
+apply plugin: 'maven-publish'
 
 repositories {
     mavenCentral()
@@ -13,11 +15,33 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.0'
     implementation 'commons-codec:commons-codec:1.15'
-    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.2.1'
-    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.14.1'
-    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.14.1'
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.7.1'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.15.2'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.1'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.1'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'net.petersil98'
+            artifactId = 'thresh'
+            version = '1.0'
+
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            name = 'bytesafe'
+            url = 'https://thresh.bytesafe.dev/maven/thresh/'
+            credentials {
+                username = 'bytesafe'
+                password = '01H1RMRBY4298D2JTH9SFZAZ8A'
+            }
+        }
+    }
 }
 
 test {
