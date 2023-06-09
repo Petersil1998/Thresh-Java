@@ -5,9 +5,9 @@ import net.petersil98.thresh.model.game.match.timeline.TimelineParticipant;
 public class WardPlaced extends TimelineEvent {
 
     private final TimelineParticipant creator;
-    private final WardKill.WardType wardType;
+    private final WardType wardType;
 
-    public WardPlaced(long timestamp, EventType type, TimelineParticipant creator, WardKill.WardType wardType) {
+    public WardPlaced(long timestamp, EventType type, TimelineParticipant creator, WardType wardType) {
         super(timestamp, type);
         this.creator = creator;
         this.wardType = wardType;
@@ -17,7 +17,7 @@ public class WardPlaced extends TimelineEvent {
         return creator;
     }
 
-    public WardKill.WardType getWardType() {
+    public WardType getWardType() {
         return wardType;
     }
 }

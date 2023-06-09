@@ -20,12 +20,4 @@ public class WardKill extends TimelineEvent {
     public WardType getWardType() {
         return wardType;
     }
-
-    public enum WardType {
-        SIGHT_WARD,
-        YELLOW_TRINKET,
-        BLUE_TRINKET,
-        CONTROL_WARD,
-        UNDEFINED
-    }
 }
