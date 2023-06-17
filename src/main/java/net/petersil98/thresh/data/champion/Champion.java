@@ -1,7 +1,7 @@
 package net.petersil98.thresh.data.champion;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.petersil98.thresh.data.Sprite;
+import net.petersil98.core.data.Sprite;
 
 import java.util.List;
 

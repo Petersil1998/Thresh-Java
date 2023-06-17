@@ -2,16 +2,39 @@ package net.petersil98.thresh.data.rune;
 
 import java.util.Objects;
 
-public class RuneStyle extends AbstractRune {
+public class RuneStyle {
+
+    protected int id;
+    protected String name;
+    protected String iconPath;
     private final String key;
 
     public RuneStyle(int id, String name, String iconPath, String key) {
-        super(id, name, iconPath);
+        this.id = id;
+        this.name = name;
+        this.iconPath = iconPath;
         this.key = key;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getIconPath() {
+        return iconPath;
     }
 
     public String getKey() {
         return this.key;
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
     }
 
     @Override

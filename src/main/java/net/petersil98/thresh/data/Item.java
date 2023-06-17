@@ -1,8 +1,9 @@
 package net.petersil98.thresh.data;
 
+import net.petersil98.core.data.Sprite;
 import net.petersil98.thresh.collection.Items;
 import net.petersil98.thresh.data.champion.Champion;
-import net.petersil98.thresh.util.Loader;
+import net.petersil98.thresh.util.LoLLoader;
 
 import java.util.List;
 import java.util.Objects;
@@ -61,14 +62,14 @@ public class Item {
     }
 
     public void postInit() {
-        if(Loader.ITEMS_FROM.containsKey(this.id)) {
-            this.from = Loader.ITEMS_FROM.get(this.id).stream().map(Items::getItem).toList();
+        if(LoLLoader.ITEMS_FROM.containsKey(this.id)) {
+            this.from = LoLLoader.ITEMS_FROM.get(this.id).stream().map(Items::getItem).toList();
         }
-        if(Loader.ITEMS_INTO.containsKey(this.id)) {
-            this.into = Loader.ITEMS_INTO.get(this.id).stream().map(Items::getItem).toList();
+        if(LoLLoader.ITEMS_INTO.containsKey(this.id)) {
+            this.into = LoLLoader.ITEMS_INTO.get(this.id).stream().map(Items::getItem).toList();
         }
-        if(Loader.ITEMS_SPECIAL_RECIPE.containsKey(this.id)) {
-            this.specialRecipe = Items.getItem(Loader.ITEMS_SPECIAL_RECIPE.get(this.id));
+        if(LoLLoader.ITEMS_SPECIAL_RECIPE.containsKey(this.id)) {
+            this.specialRecipe = Items.getItem(LoLLoader.ITEMS_SPECIAL_RECIPE.get(this.id));
         }
     }
 

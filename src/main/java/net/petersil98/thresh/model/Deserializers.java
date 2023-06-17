@@ -3,25 +3,24 @@ package net.petersil98.thresh.model;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import net.petersil98.core.constant.Platform;
+import net.petersil98.stcommons.model.Summoner;
 import net.petersil98.thresh.collection.*;
-import net.petersil98.thresh.constant.Platform;
 import net.petersil98.thresh.data.champion.Champion;
 import net.petersil98.thresh.data.rune.BaseRune;
 import net.petersil98.thresh.data.rune.Rune;
-import net.petersil98.thresh.model.game.match.MatchDetails;
-import net.petersil98.thresh.model.game.match.Objective;
-import net.petersil98.thresh.model.game.match.Team;
-import net.petersil98.thresh.model.game.match.participant.ChallengeStats;
-import net.petersil98.thresh.model.game.match.participant.MatchParticipant;
-import net.petersil98.thresh.model.game.match.participant.PingStats;
-import net.petersil98.thresh.model.game.match.participant.RuneExtraData;
-import net.petersil98.thresh.model.game.match.timeline.*;
-import net.petersil98.thresh.model.game.match.timeline.event.*;
-import net.petersil98.thresh.model.game.spectator.ActiveGame;
-import net.petersil98.thresh.model.game.spectator.Ban;
-import net.petersil98.thresh.model.game.spectator.Participant;
-import net.petersil98.thresh.model.summoner.ChampionMastery;
-import net.petersil98.thresh.model.summoner.Summoner;
+import net.petersil98.thresh.model.match.MatchDetails;
+import net.petersil98.thresh.model.match.Objective;
+import net.petersil98.thresh.model.match.Team;
+import net.petersil98.thresh.model.match.participant.ChallengeStats;
+import net.petersil98.thresh.model.match.participant.MatchParticipant;
+import net.petersil98.thresh.model.match.participant.PingStats;
+import net.petersil98.thresh.model.match.participant.RuneExtraData;
+import net.petersil98.thresh.model.match.timeline.*;
+import net.petersil98.thresh.model.match.timeline.event.*;
+import net.petersil98.thresh.model.spectator.ActiveGame;
+import net.petersil98.thresh.model.spectator.Ban;
+import net.petersil98.thresh.model.spectator.Participant;
 
 import java.io.IOException;
 import java.util.*;
@@ -31,12 +30,12 @@ public class Deserializers {
 
     public static final ObjectMapper MAPPER = new ObjectMapper();
 
-    public static class ChampionMasteryDeserializer extends JsonDeserializer<ChampionMastery> {
+    public static class ChampionMasteryDeserializer extends JsonDeserializer<ChampionMasteries.Mastery> {
 
         @Override
-        public ChampionMastery deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+        public ChampionMasteries.Mastery deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
             JsonNode root = jp.getCodec().readTree(jp);
-            return new ChampionMastery(root.get("chestGranted").asBoolean(), root.get("championLevel").asInt(), root.get("championPoints").asInt(),
+            return new ChampionMasteries.Mastery(root.get("chestGranted").asBoolean(), root.get("championLevel").asInt(), root.get("championPoints").asInt(),
                     Champions.getChampion(root.get("championId").asInt()), root.get("championPointsUntilNextLevel").asInt(),
                     root.get("lastPlayTime").asInt(), root.get("tokensEarned").asInt(), root.get("championPointsSinceLastLevel").asInt());
         }

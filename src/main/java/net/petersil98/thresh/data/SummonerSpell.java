@@ -1,5 +1,7 @@
 package net.petersil98.thresh.data;
 
+import net.petersil98.core.data.Sprite;
+
 import java.util.List;
 
 public class SummonerSpell {
