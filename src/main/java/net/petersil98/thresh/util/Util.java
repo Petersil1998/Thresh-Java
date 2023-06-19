@@ -49,15 +49,6 @@ public class Util {
         return String.format("%scdn/img%s", Constants.DDRAGON_BASE_PATH, challenge.getLevelToIconPath().get(tier));
     }
 
-    /*public static function getBase64EncodedImageFromSprite(Sprite $sprite): string
-    {
-        ob_start();
-        imagepng(Util::getPNGFromSprite($sprite));
-        $image = ob_get_contents();
-        ob_end_clean();
-        return base64_encode($image);
-    }*/
-
     public static void validateFilter(java.util.Map<String, String> filter) {
         filter.forEach((filterName, arg) -> {
             switch (filterName) {
