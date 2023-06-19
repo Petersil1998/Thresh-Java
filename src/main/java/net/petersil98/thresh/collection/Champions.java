@@ -20,8 +20,4 @@ public class Champions {
     public static List<Champion> getChampions() {
         return champions;
     }
-
-    public static void setChampions(List<Champion> champions) {
-        Champions.champions = champions;
-    }
 }

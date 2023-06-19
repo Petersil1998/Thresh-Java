@@ -15,8 +15,4 @@ public class Items {
     public static List<Item> getItems() {
         return items;
     }
-
-    public static void setItems(List<Item> items) {
-        Items.items = items;
-    }
 }

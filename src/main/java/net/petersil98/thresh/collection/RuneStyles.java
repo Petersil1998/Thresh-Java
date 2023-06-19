@@ -15,8 +15,4 @@ public class RuneStyles {
     public static List<RuneStyle> getRuneStyles() {
         return runeStyles;
     }
-
-    public static void setRuneStyles(List<RuneStyle> runeStyles) {
-        RuneStyles.runeStyles = runeStyles;
-    }
 }

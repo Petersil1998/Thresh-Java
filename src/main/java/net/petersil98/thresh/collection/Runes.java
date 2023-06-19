@@ -15,8 +15,4 @@ public class Runes {
     public static List<Rune> getRunes() {
         return runes;
     }
-
-    public static void setRunes(List<Rune> runes) {
-        Runes.runes = runes;
-    }
 }

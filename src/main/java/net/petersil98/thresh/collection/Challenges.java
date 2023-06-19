@@ -15,8 +15,4 @@ public class Challenges {
     public static List<Challenge> getChallenges() {
         return challenges;
     }
-
-    public static void setChallenges(List<Challenge> challenges) {
-        Challenges.challenges = challenges;
-    }
 }

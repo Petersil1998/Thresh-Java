@@ -15,8 +15,4 @@ public class RuneStats {
     public static List<RuneStat> getRuneStats() {
         return runeStats;
     }
-
-    public static void setRuneStats(List<RuneStat> runeStats) {
-        RuneStats.runeStats = runeStats;
-    }
 }

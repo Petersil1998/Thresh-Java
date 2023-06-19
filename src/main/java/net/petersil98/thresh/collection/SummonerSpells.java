@@ -15,8 +15,4 @@ public class SummonerSpells {
     public static List<SummonerSpell> getSummonerSpells() {
         return summonerSpells;
     }
-
-    public static void setSummonerSpells(List<SummonerSpell> summonerSpells) {
-        SummonerSpells.summonerSpells = summonerSpells;
-    }
 }

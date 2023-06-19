@@ -15,8 +15,4 @@ public class Maps {
     public static List<Map> getMaps() {
         return maps;
     }
-
-    public static void setMaps(List<Map> maps) {
-        Maps.maps = maps;
-    }
 }

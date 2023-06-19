@@ -15,8 +15,4 @@ public class QueueTypes {
     public static List<QueueType> getQueueTypes() {
         return queueTypes;
     }
-
-    public static void setQueueTypes(List<QueueType> queueTypes) {
-        QueueTypes.queueTypes = queueTypes;
-    }
 }

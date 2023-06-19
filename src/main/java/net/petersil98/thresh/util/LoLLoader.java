@@ -9,6 +9,7 @@ import net.petersil98.core.constant.Constants;
 import net.petersil98.core.data.Sprite;
 import net.petersil98.core.util.Loader;
 import net.petersil98.core.util.settings.Settings;
+import net.petersil98.thresh.Thresh;
 import net.petersil98.thresh.collection.*;
 import net.petersil98.thresh.data.Challenge;
 import net.petersil98.thresh.data.Item;
@@ -21,6 +22,7 @@ import net.petersil98.thresh.data.rune.RuneStyle;
 import org.apache.logging.log4j.core.util.IOUtils;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -109,7 +111,7 @@ public class LoLLoader extends Loader {
                         runeStyle.get("key").asText())
                 );
             }
-            RuneStyles.setRuneStyles(runeStyles);
+            setFieldInCollection(RuneStyles.class, runeStyles);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -134,7 +136,7 @@ public class LoLLoader extends Loader {
                     }
                 }
             }
-            Runes.setRunes(runes);
+            setFieldInCollection(Runes.class, runes);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -175,7 +177,7 @@ public class LoLLoader extends Loader {
                         runeStyle.get("longDesc").asText())
                 );
             }
-            RuneStats.setRuneStats(runeStats);
+            setFieldInCollection(RuneStats.class, runeStats);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -211,7 +213,7 @@ public class LoLLoader extends Loader {
                         sprite)
                 );
             }
-            Maps.setMaps(maps);
+            setFieldInCollection(Maps.class, maps);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -229,7 +231,7 @@ public class LoLLoader extends Loader {
     private void loadChampions(){
         try {
             String content = Files.readString(Paths.get(CHAMPIONS_FILE_PATH));
-            Champions.setChampions(MAPPER.readValue(content, TypeFactory.defaultInstance().constructCollectionType(List.class, Champion.class)));
+            setFieldInCollection(Champions.class, MAPPER.readValue(content, TypeFactory.defaultInstance().constructCollectionType(List.class, Champion.class)));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -250,7 +252,7 @@ public class LoLLoader extends Loader {
     private void loadQueueTypes(){
         try {
             String content = Files.readString(Paths.get(QUEUE_TYPES_FILE_PATH));
-            QueueTypes.setQueueTypes(MAPPER.readValue(content, TypeFactory.defaultInstance().constructCollectionType(List.class, QueueType.class)));
+            setFieldInCollection(QueueTypes.class, MAPPER.readValue(content, TypeFactory.defaultInstance().constructCollectionType(List.class, QueueType.class)));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -324,7 +326,7 @@ public class LoLLoader extends Loader {
                     ITEMS_SPECIAL_RECIPE.put(Integer.parseInt(entry.getKey()), node.get("specialRecipe").asInt());
                 }
             }
-            Items.setItems(items);
+            setFieldInCollection(Items.class, items);
             Items.getItems().forEach(Item::postInit);
         } catch (IOException e) {
             e.printStackTrace();
@@ -385,7 +387,7 @@ public class LoLLoader extends Loader {
                         )
                 );
             }
-            SummonerSpells.setSummonerSpells(list);
+            setFieldInCollection(SummonerSpells.class, list);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -406,7 +408,7 @@ public class LoLLoader extends Loader {
     private void loadChallenges(){
         try {
             String content = Files.readString(Paths.get(CHALLENGES_FILE_PATH));
-            Challenges.setChallenges(MAPPER.readValue(content, TypeFactory.defaultInstance().constructCollectionType(List.class, Challenge.class)));
+            setFieldInCollection(Challenges.class, MAPPER.readValue(content, TypeFactory.defaultInstance().constructCollectionType(List.class, Challenge.class)));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -473,5 +475,18 @@ public class LoLLoader extends Loader {
     private void renameFieldInNode(ObjectNode node, String fieldName, String newFieldName) {
         node.set(newFieldName, node.get(fieldName));
         node.remove(fieldName);
+    }
+
+    private void setFieldInCollection(Class<?> collectionClass, List<?> elements) {
+        try {
+            char[] fieldName = collectionClass.getSimpleName().toCharArray();
+            fieldName[0] += 32;
+            Field field = collectionClass.getDeclaredField(new String(fieldName));
+            field.setAccessible(true);
+            field.set(null, elements);
+            field.setAccessible(false);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            Thresh.LOGGER.error("Couldn't set collection Type of class " + collectionClass.getSimpleName(), e);
+        }
     }
 }
