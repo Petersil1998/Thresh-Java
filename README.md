@@ -2,7 +2,7 @@
 
 Thresh is an Object-Oriented Java Library, which takes over the Communication
 with the League of Legends API. It makes retrieving Summoner Data, Match History,
-etc. much easier. For Teamfight Tactics take a look at [Spatula](https://github.com/Petersil1998/Spatula)
+etc. much easier. For Teamfight Tactics take a look at [Spatula](https://github.com/Petersil1998/Spatula).
 
 ## Usage
 
@@ -149,7 +149,7 @@ Now Thresh is ready and set up!
         } 
     } 
     ```
-  The Match History Filter can have those values:
+  The Match History Filter can have the following values:
 
   | Key       | Description                                                                                                                                                                                                      | Type   |
   |-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|
@@ -158,8 +158,9 @@ Now Thresh is ready and set up!
   | queue     | Queue ID. Works mutually inclusive with **type**. [QueueTypes](https://github.com/Petersil1998/Thresh-Java/blob/master/src/main/java/net/petersil98/thresh/collection/QueueTypes.java) contains all valid queues | int    |
   | type      | Type of a Match. Works mutually inclusive with **queue**                                                                                                                                                         | String |
   | start     | The offset of the first Match entry                                                                                                                                                                              | int    |
-  | count     | The Amount of Matches entries to return. Has to be between 0 and 100                                                                                                                                             | int    |                                                                                                                                                                                  
-    **Note**: *All values need to be passed as **Strings** in the filter*
+  | count     | The Amount of Matches entries to return. Has to be between 0 and 100                                                                                                                                             | int    |
+
+  **Note**: *All values need to be passed as **Strings** in the filter*
 
 
 - **Collections**
@@ -176,4 +177,4 @@ Now Thresh is ready and set up!
     - RuneStyles (Precision, Domination, Sorcery, Resolve, Inspiration)
     - Summoner Spells
 
-#### Feel free to give Feedback and add suggestions on how this library can be improved. <br>Thank you for using Thresh, you're awesome!
+### Feel free to give Feedback and add suggestions on how this library can be improved. <br>Thank you for using Thresh, you're awesome!
