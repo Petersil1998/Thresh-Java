@@ -1,14 +1,11 @@
 package net.petersil98.thresh.model.match.timeline;
 
-import net.petersil98.stcommons.model.Summoner;
-
 import java.util.Objects;
 
 public class TimelineParticipant {
 
     private int participantId;
     private String puuid;
-    private Summoner summoner;
 
     public int getParticipantId() {
         return this.participantId;
@@ -16,11 +13,6 @@ public class TimelineParticipant {
 
     public String getPuuid() {
         return this.puuid;
-    }
-
-    public Summoner getSummoner() {
-        if(this.summoner == null) this.summoner = Summoner.getSummonerByPUUID(this.puuid);
-        return this.summoner;
     }
 
     @Override

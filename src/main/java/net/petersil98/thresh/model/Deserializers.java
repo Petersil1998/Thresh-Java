@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import net.petersil98.core.constant.Platform;
-import net.petersil98.stcommons.model.Summoner;
 import net.petersil98.thresh.collection.*;
 import net.petersil98.thresh.data.champion.Champion;
 import net.petersil98.thresh.data.rune.BaseRune;
@@ -53,7 +52,7 @@ public class Deserializers {
                 if (rune == null) rune = RuneStats.getRuneStat(node.asInt());
                 runes.add(rune);
             }
-            return new Participant(Summoner.getSummonerByID(root.get("summonerId").asText()), root.get("bot").asBoolean(),
+            return new Participant(root.get("summonerId").asText(), root.get("bot").asBoolean(),
                     Champions.getChampion(root.get("championId").asInt()), root.get("teamId").asInt(),
                     SummonerSpells.getSummonerSpell(root.get("spell1Id").asInt()), SummonerSpells.getSummonerSpell(root.get("spell2Id").asInt()),
                     runes, RuneStyles.getRuneStyle(perks.get("perkStyle").asInt()), RuneStyles.getRuneStyle(perks.get("perkSubStyle").asInt()));
@@ -80,8 +79,9 @@ public class Deserializers {
                     root.get("gameType").asText(), QueueTypes.getQueueType(root.get("gameQueueConfigId").asInt()),
                     participants.stream().filter(participant -> participant.getTeamId() == 100).toList(),
                     participants.stream().filter(participant -> participant.getTeamId() == 200).toList(),
-                    participants.size() / 2, bans, root.get("observers").get("encryptionKey").asText(), root.get("platformId").asText(),
-                    root.get("gameStartTime").asInt(), root.get("gameLength").asInt());
+                    participants.size() / 2, bans, root.get("observers").get("encryptionKey").asText(),
+                    Platform.getPlatform(root.get("platformId").asText()), root.get("gameStartTime").asInt(),
+                    root.get("gameLength").asInt());
         }
     }
 

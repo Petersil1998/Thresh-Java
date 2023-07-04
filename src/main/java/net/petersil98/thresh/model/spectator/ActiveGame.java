@@ -2,9 +2,8 @@ package net.petersil98.thresh.model.spectator;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import net.petersil98.core.constant.Constants;
-import net.petersil98.core.http.RiotAPIRequest;
-import net.petersil98.core.util.settings.Settings;
-import net.petersil98.stcommons.model.Summoner;
+import net.petersil98.core.constant.Platform;
+import net.petersil98.core.http.RiotAPI;
 import net.petersil98.thresh.data.Map;
 import net.petersil98.thresh.data.QueueType;
 import net.petersil98.thresh.model.Deserializers;
@@ -25,11 +24,11 @@ public class ActiveGame {
     private final int teamsize;
     private final List<Ban> bans;
     private final String spectatorKey;
-    private final String platformId;
+    private final Platform platform;
     private final int startTime;
     private final int duration;
 
-    public ActiveGame(long gameId, Map map, String gameMode, String gameType, QueueType queueType, List<Participant> blueSideTeam, List<Participant> redSideTeam, int teamsize, List<Ban> bans, String spectatorKey, String platformId, int startTime, int duration) {
+    public ActiveGame(long gameId, Map map, String gameMode, String gameType, QueueType queueType, List<Participant> blueSideTeam, List<Participant> redSideTeam, int teamsize, List<Ban> bans, String spectatorKey, Platform platform, int startTime, int duration) {
         this.gameId = gameId;
         this.map = map;
         this.gameMode = gameMode;
@@ -40,17 +39,13 @@ public class ActiveGame {
         this.teamsize = teamsize;
         this.bans = bans;
         this.spectatorKey = spectatorKey;
-        this.platformId = platformId;
+        this.platform = platform;
         this.startTime = startTime;
         this.duration = duration;
     }
 
-    public static ActiveGame ofSummoner(Summoner summoner) {
-        return ActiveGame.ofSummoner(summoner.getId());
-    }
-
-    public static ActiveGame ofSummoner(String summonerID) {
-        return RiotAPIRequest.requestLoLSpectatorEndpoint("active-games/by-summoner/" + summonerID, ActiveGame.class);
+    public static ActiveGame ofSummoner(String summonerID, Platform platform) {
+        return RiotAPI.requestLoLSpectatorEndpoint("active-games/by-summoner/", summonerID, platform, ActiveGame.class);
     }
 
     public long getGameId() {
@@ -93,8 +88,8 @@ public class ActiveGame {
         return this.spectatorKey;
     }
 
-    public String getPlatformId() {
-        return this.platformId;
+    public Platform getPlatform() {
+        return this.platform;
     }
 
     public int getStartTime() {
@@ -106,9 +101,9 @@ public class ActiveGame {
     }
 
     public String getSpectatorCommandWindows(String pathToRiotFolder) {
-        String url = Constants.SPECTATOR_URL.replaceAll("\\{platform}", Settings.getCurrentConfig().getPlatform().toString());
+        String url = Constants.SPECTATOR_URL.replaceAll("\\{platform}", this.platform.toString());
         return String.format("cd /d \"%sRiot Games\\League of Legends\\Game\" & \"League of Legends.exe\" \"spectator %s %s %d %s\" \"-UseRads\"",
-                pathToRiotFolder, url, this.getSpectatorKey(), this.getGameId(), this.getPlatformId());
+                pathToRiotFolder, url, this.getSpectatorKey(), this.getGameId(), this.getPlatform());
     }
 
     @Override
@@ -116,12 +111,12 @@ public class ActiveGame {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ActiveGame that = (ActiveGame) o;
-        return gameId == that.gameId && Objects.equals(platformId, that.platformId);
+        return gameId == that.gameId && Objects.equals(platform, that.platform);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gameId, platformId);
+        return Objects.hash(gameId, platform);
     }
 
     @Override
@@ -137,7 +132,7 @@ public class ActiveGame {
                 ", teamsize=" + teamsize +
                 ", bans=" + bans +
                 ", spectatorKey='" + spectatorKey + '\'' +
-                ", platformId='" + platformId + '\'' +
+                ", platformId='" + platform + '\'' +
                 ", startTime=" + startTime +
                 ", duration=" + duration +
                 '}';

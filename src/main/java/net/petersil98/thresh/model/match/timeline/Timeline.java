@@ -1,7 +1,8 @@
 package net.petersil98.thresh.model.match.timeline;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import net.petersil98.core.http.RiotAPIRequest;
+import net.petersil98.core.constant.Region;
+import net.petersil98.core.http.RiotAPI;
 import net.petersil98.thresh.model.Deserializers;
 
 import java.util.List;
@@ -21,8 +22,8 @@ public class Timeline {
         this.participants = participants;
     }
 
-    public static Timeline getTimelinesForMatch(String matchId) {
-        return RiotAPIRequest.requestLoLMatchEndpoint("matches/" + matchId + "/timeline", Timeline.class);
+    public static Timeline getTimelinesForMatch(String matchId, Region region) {
+        return RiotAPI.requestLoLMatchEndpoint("matches/", matchId + "/timeline", region, Timeline.class);
     }
 
     public int getFrameInterval() {

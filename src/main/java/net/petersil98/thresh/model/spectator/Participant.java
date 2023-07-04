@@ -1,7 +1,6 @@
 package net.petersil98.thresh.model.spectator;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import net.petersil98.stcommons.model.Summoner;
 import net.petersil98.thresh.data.SummonerSpell;
 import net.petersil98.thresh.data.champion.Champion;
 import net.petersil98.thresh.data.rune.BaseRune;
@@ -13,7 +12,7 @@ import java.util.Objects;
 
 @JsonDeserialize(using = Deserializers.ParticipantDeserializer.class)
 public class Participant {
-    private final Summoner summoner;
+    private final String summonerId;
     private final boolean isBot;
     private final Champion champion;
     private final int teamId;
@@ -23,8 +22,8 @@ public class Participant {
     private final RuneStyle runeStyle;
     private final RuneStyle runeSubStyle;
 
-    public Participant(Summoner summoner, boolean isBot, Champion champion, int teamId, SummonerSpell summonerSpell1, SummonerSpell summonerSpell2, List<BaseRune> runes, RuneStyle runeStyle, RuneStyle runeSubStyle) {
-        this.summoner = summoner;
+    public Participant(String summonerId, boolean isBot, Champion champion, int teamId, SummonerSpell summonerSpell1, SummonerSpell summonerSpell2, List<BaseRune> runes, RuneStyle runeStyle, RuneStyle runeSubStyle) {
+        this.summonerId = summonerId;
         this.isBot = isBot;
         this.champion = champion;
         this.teamId = teamId;
@@ -35,8 +34,8 @@ public class Participant {
         this.runeSubStyle = runeSubStyle;
     }
 
-    public Summoner getSummoner() {
-        return this.summoner;
+    public String getSummonerId() {
+        return this.summonerId;
     }
 
     public boolean isBot() {
@@ -73,7 +72,7 @@ public class Participant {
 
     @Override
     public String toString() {
-        return this.summoner.toString();
+        return this.summonerId;
     }
 
     @Override
@@ -81,11 +80,11 @@ public class Participant {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Participant that = (Participant) o;
-        return Objects.equals(summoner, that.summoner);
+        return Objects.equals(summonerId, that.summonerId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(summoner);
+        return Objects.hash(summonerId);
     }
 }

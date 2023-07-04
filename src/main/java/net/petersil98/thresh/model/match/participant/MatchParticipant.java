@@ -1,7 +1,6 @@
 package net.petersil98.thresh.model.match.participant;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import net.petersil98.stcommons.model.Summoner;
 import net.petersil98.thresh.data.Item;
 import net.petersil98.thresh.data.SummonerSpell;
 import net.petersil98.thresh.data.champion.Champion;
@@ -110,7 +109,6 @@ public class MatchParticipant {
     private final int nexusTakedowns;
     private final int objectivesStolen;
     private final int objectivesStolenAssists;
-    private Summoner summoner;
     private final String summonerId;
     private final int spell1Casts;
     private final int spell2Casts;
@@ -639,11 +637,6 @@ public class MatchParticipant {
 
     public String getSummonerId() {
         return this.summonerId;
-    }
-
-    public Summoner getSummoner() {
-        if (this.summoner == null) this.summoner = Summoner.getSummonerByID(this.summonerId);
-        return this.summoner;
     }
 
     public int getSpell1Casts() {

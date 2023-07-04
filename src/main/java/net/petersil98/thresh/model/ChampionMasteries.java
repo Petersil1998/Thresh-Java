@@ -2,7 +2,8 @@ package net.petersil98.thresh.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import net.petersil98.core.http.RiotAPIRequest;
+import net.petersil98.core.constant.Platform;
+import net.petersil98.core.http.RiotAPI;
 import net.petersil98.thresh.data.champion.Champion;
 
 import java.util.List;
@@ -11,27 +12,29 @@ import java.util.Objects;
 public class ChampionMasteries {
 
     private final String summonerId;
+    private final Platform platform;
     private List<Mastery> masteries;
     private int totalMasteryPoints = -1;
 
-    private ChampionMasteries(String summonerId) {
+    private ChampionMasteries(String summonerId, Platform platform) {
         this.summonerId = summonerId;
+        this.platform = platform;
     }
 
-    public static ChampionMasteries getChampionMasteriesOfSummoner(String summonerId) {
-        return new ChampionMasteries(summonerId);
+    public static ChampionMasteries getChampionMasteriesOfSummoner(String summonerId, Platform platform) {
+        return new ChampionMasteries(summonerId, platform);
     }
 
     public int getTotalMasteryPoints() {
         if(this.totalMasteryPoints == -1) {
-            this.totalMasteryPoints = RiotAPIRequest.requestLoLChampionMasteryEndpoint("scores/by-summoner/" + this.summonerId, Integer.class);
+            this.totalMasteryPoints = RiotAPI.requestLoLChampionMasteryEndpoint("scores/by-summoner/", this.summonerId, this.platform, Integer.class);
         }
         return this.totalMasteryPoints;
     }
 
     public List<Mastery> getChampionMasteries() {
         if(this.masteries == null) {
-            this.masteries = RiotAPIRequest.requestLoLChampionMasteryEndpoint("champion-masteries/by-summoner/" + this.summonerId, TypeFactory.defaultInstance().constructCollectionType(List.class, Mastery.class));
+            this.masteries = RiotAPI.requestLoLChampionMasteryEndpoint("champion-masteries/by-summoner/", this.summonerId, this.platform, TypeFactory.defaultInstance().constructCollectionType(List.class, Mastery.class));
         }
         return this.masteries;
     }

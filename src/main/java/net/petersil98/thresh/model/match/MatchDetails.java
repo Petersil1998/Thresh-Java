@@ -3,8 +3,8 @@ package net.petersil98.thresh.model.match;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import net.petersil98.core.constant.Platform;
-import net.petersil98.core.http.RiotAPIRequest;
-import net.petersil98.stcommons.model.Summoner;
+import net.petersil98.core.constant.Region;
+import net.petersil98.core.http.RiotAPI;
 import net.petersil98.thresh.data.Map;
 import net.petersil98.thresh.data.QueueType;
 import net.petersil98.thresh.model.Deserializers;
@@ -53,8 +53,8 @@ public class MatchDetails {
         this.tournamentCode = tournamentCode;
     }
 
-    public static MatchDetails getMatchDetails(String matchId) {
-        return RiotAPIRequest.requestLoLMatchEndpoint("matches/" + matchId, MatchDetails.class);
+    public static MatchDetails getMatchDetails(String matchId, Region region) {
+        return RiotAPI.requestLoLMatchEndpoint("matches/", matchId, region, MatchDetails.class);
     }
 
     public long getGameCreation() {
@@ -117,18 +117,14 @@ public class MatchDetails {
         return tournamentCode;
     }
 
-    public static List<MatchDetails> getMatchHistory(Summoner summoner, java.util.Map<String, String> filter) {
-        return getMatchHistory(summoner.getPuuid(), filter);
-    }
-
-    public static List<MatchDetails> getMatchHistory(String puuid, java.util.Map<String, String> filter) {
+    public static List<MatchDetails> getMatchHistory(String puuid, Region region, java.util.Map<String, String> filter) {
         Util.validateFilter(filter);
-        List<String> matchIds = RiotAPIRequest.requestLoLMatchEndpoint("matches/by-puuid/" + puuid + "/ids", TypeFactory.defaultInstance().constructCollectionType(List.class, String.class), filter);
-        return matchIds.stream().map(MatchDetails::getMatchDetails).toList();
+        List<String> matchIds = RiotAPI.requestLoLMatchEndpoint("matches/by-puuid/", puuid + "/ids", region, TypeFactory.defaultInstance().constructCollectionType(List.class, String.class), filter);
+        return matchIds.stream().map(matchId -> MatchDetails.getMatchDetails(matchId, region)).toList();
     }
 
     public Timeline getTimeline() {
-        if(this.timeline == null) this.timeline = Timeline.getTimelinesForMatch(this.platform.toString().toUpperCase()+ "_" + this.gameId);
+        if(this.timeline == null) this.timeline = Timeline.getTimelinesForMatch(this.platform.toString().toUpperCase()+ "_" + this.gameId, Region.byPlatform(this.platform));
         return this.timeline;
     }
 
