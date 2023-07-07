@@ -2,17 +2,19 @@ package net.petersil98.thresh.collection;
 
 import net.petersil98.thresh.data.rune.RuneStat;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class RuneStats {
 
-    private static List<RuneStat> runeStats;
+    private static Map<Integer, RuneStat> runeStats;
 
     public static RuneStat getRuneStat(int id){
-        return runeStats.stream().filter(runeStat -> runeStat.getId() == id).findFirst().orElse(null);
+        return runeStats.get(id);
     }
 
     public static List<RuneStat> getRuneStats() {
-        return runeStats;
+        return new ArrayList<>(runeStats.values());
     }
 }

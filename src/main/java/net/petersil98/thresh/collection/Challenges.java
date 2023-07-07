@@ -2,17 +2,19 @@ package net.petersil98.thresh.collection;
 
 import net.petersil98.thresh.data.Challenge;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Challenges {
 
-    private static List<Challenge> challenges;
+    private static Map<Integer, Challenge> challenges;
 
     public static Challenge getChallenge(int id) {
-        return challenges.stream().filter(challenge -> challenge.getId() == id).findFirst().orElse(null);
+        return challenges.get(id);
     }
 
     public static List<Challenge> getChallenges() {
-        return challenges;
+        return new ArrayList<>(challenges.values());
     }
 }

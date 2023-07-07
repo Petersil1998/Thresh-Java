@@ -1,27 +1,26 @@
 package net.petersil98.thresh.data.champion;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import net.petersil98.core.data.Sprite;
 
 import java.util.List;
 
 public class Champion {
 
-    private int id;
-    private String name;
-    private String title;
-    private String fullImage;
-    private Sprite sprite;
-    private List<Skin> skins;
-    private String lore;
-    private List<String> allyTips;
-    private List<String> enemyTips;
-    private List<String> tags;
-    private String resourceType;
-    @JsonProperty("stats")
-    private Stats baseStats;
+    private final int id;
+    private final String name;
+    private final String title;
+    private final String fullImage;
+    private final Sprite sprite;
+    private final List<Skin> skins;
+    private final String lore;
+    private final List<String> allyTips;
+    private final List<String> enemyTips;
+    private final List<String> tags;
+    private final String resourceType;
+    private final Info info;
+    private final Stats baseStats;
 
-    public Champion(int id, String name, String title, String fullImage, Sprite sprite, List<Skin> skins, String lore, List<String> allyTips, List<String> enemyTips, List<String> tags, String resourceType, Stats baseStats) {
+    public Champion(int id, String name, String title, String fullImage, Sprite sprite, List<Skin> skins, String lore, List<String> allyTips, List<String> enemyTips, List<String> tags, String resourceType, Info info, Stats baseStats) {
         this.id = id;
         this.name = name;
         this.title = title;
@@ -33,10 +32,9 @@ public class Champion {
         this.enemyTips = enemyTips;
         this.tags = tags;
         this.resourceType = resourceType;
+        this.info = info;
         this.baseStats = baseStats;
     }
-
-    public Champion() {}
 
     public int getId() {
         return id;
@@ -80,6 +78,10 @@ public class Champion {
 
     public String getResourceType() {
         return resourceType;
+    }
+
+    public Info getInfo() {
+        return info;
     }
 
     public Stats getBaseStats() {

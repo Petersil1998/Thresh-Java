@@ -1,24 +1,25 @@
 package net.petersil98.thresh.data.champion;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Skin {
 
-    private int id;
-    private String name;
-    @JsonProperty("chromas")
-    private boolean hasChromas;
+    private final int id;
+    private final int skinNum;
+    private final String name;
+    private final boolean hasChromas;
 
-    public Skin(int id, String name, boolean hasChromas) {
+    public Skin(int id, int skinNum, String name, boolean hasChromas) {
         this.id = id;
+        this.skinNum = skinNum;
         this.name = name;
         this.hasChromas = hasChromas;
     }
 
-    public Skin() {}
-
     public int getId() {
         return id;
+    }
+
+    public int getSkinNum() {
+        return skinNum;
     }
 
     public String getName() {

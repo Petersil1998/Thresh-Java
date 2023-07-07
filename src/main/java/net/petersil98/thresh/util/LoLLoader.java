@@ -1,10 +1,8 @@
 package net.petersil98.thresh.util;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import net.petersil98.core.Core;
 import net.petersil98.core.constant.Constants;
 import net.petersil98.core.data.Sprite;
 import net.petersil98.core.util.Loader;
@@ -16,50 +14,38 @@ import net.petersil98.thresh.data.Item;
 import net.petersil98.thresh.data.QueueType;
 import net.petersil98.thresh.data.SummonerSpell;
 import net.petersil98.thresh.data.champion.Champion;
+import net.petersil98.thresh.data.champion.Info;
+import net.petersil98.thresh.data.champion.Skin;
+import net.petersil98.thresh.data.champion.Stats;
 import net.petersil98.thresh.data.rune.Rune;
 import net.petersil98.thresh.data.rune.RuneStat;
 import net.petersil98.thresh.data.rune.RuneStyle;
 import org.apache.logging.log4j.core.util.IOUtils;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static net.petersil98.thresh.model.Deserializers.MAPPER;
 
+//TODO: Check image locations
 public class LoLLoader extends Loader {
 
-    private static final String LOL_BASE_PATH = BASE_PATH + "lol" + File.separator;
-    private static final String RUNE_STATS_FILE_PATH = LOL_BASE_PATH + "runeStats.json";
-    private static final String RUNES_AND_RUNE_STYLES_FILE_PATH = LOL_BASE_PATH + "runes.json";
-    private static final String MAPS_FILE_PATH = LOL_BASE_PATH + "maps.json";
-    private static final String CHAMPIONS_FILE_PATH = LOL_BASE_PATH + "champions.json";
-    private static final String QUEUE_TYPES_FILE_PATH = LOL_BASE_PATH + "queues.json";
-    private static final String ITEMS_FILE_PATH = LOL_BASE_PATH + "items.json";
-    private static final String SUMMONER_SPELLS_FILE_PATH = LOL_BASE_PATH + "summonerSpells.json";
-    private static final String CHALLENGES_FILE_PATH = LOL_BASE_PATH + "challenges.json";
+    private static String latestDDragonVersion;
 
     public static java.util.Map<Integer, List<Integer>> ITEMS_FROM = new HashMap<>();
     public static java.util.Map<Integer, List<Integer>> ITEMS_INTO = new HashMap<>();
     public static java.util.Map<Integer, Integer> ITEMS_SPECIAL_RECIPE = new HashMap<>();
 
     @Override
-    protected void load(boolean shouldUpdate) {
-        createFilesIfNotExistent();
-        if(shouldUpdate) {
-            updateRunesAndRuneStylesFile();
-            updateRuneStatsFile();
-            updateMapsFile();
-            updateChampionsFile();
-            updateQueueTypesFile();
-            updateItemsFile();
-            updateSummonerSpellsFile();
-            updateChallengesFile();
-        }
+    protected void load() {
+        if(latestDDragonVersion == null) loadLatestVersions();
         loadRuneStyles();
         loadRunes();
         loadRuneStats();
@@ -71,61 +57,58 @@ public class LoLLoader extends Loader {
         loadChallenges();
     }
 
-    private void createFilesIfNotExistent() {
-        try {
-            new File(LOL_BASE_PATH).mkdirs();
-            new File(RUNE_STATS_FILE_PATH).createNewFile();
-            new File(RUNES_AND_RUNE_STYLES_FILE_PATH).createNewFile();
-            new File(MAPS_FILE_PATH).createNewFile();
-            new File(CHAMPIONS_FILE_PATH).createNewFile();
-            new File(QUEUE_TYPES_FILE_PATH).createNewFile();
-            new File(ITEMS_FILE_PATH).createNewFile();
-            new File(SUMMONER_SPELLS_FILE_PATH).createNewFile();
-            new File(CHALLENGES_FILE_PATH).createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void updateRunesAndRuneStylesFile(){
-        try(BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(String.format("%scdn/%s/data/%s/runesReforged.json", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, Settings.getLanguage().toString())).openStream()));
-            BufferedWriter writer = new BufferedWriter(new FileWriter(RUNES_AND_RUNE_STYLES_FILE_PATH))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                writer.write(line);
+    @Override
+    protected boolean shouldReloadData() {
+        String versionsUrl = Constants.DDRAGON_BASE_PATH + "api/versions.json";
+        try(InputStream lolVersion = URI.create(versionsUrl).toURL().openConnection().getInputStream()) {
+            String[] versions = Core.MAPPER.readValue(IOUtils.toString(new InputStreamReader(lolVersion)), TypeFactory.defaultInstance().constructArrayType(String.class));
+            Constants.DDRAGON_VERSION = versions[0];
+            if(!latestDDragonVersion.equals(Constants.DDRAGON_VERSION)) {
+                latestDDragonVersion = Constants.DDRAGON_VERSION;
+                return true;
             }
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
+
+    private static void loadLatestVersions() {
+        String versionsUrl = Constants.DDRAGON_BASE_PATH + "api/versions.json";
+        try(InputStream lolVersion = URI.create(versionsUrl).toURL().openConnection().getInputStream()) {
+            String[] versions = Core.MAPPER.readValue(IOUtils.toString(new InputStreamReader(lolVersion)), TypeFactory.defaultInstance().constructArrayType(String.class));
+            Constants.DDRAGON_VERSION = versions[0];
+            latestDDragonVersion = versions[0];
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void loadRuneStyles(){
-        try {
-            String content = Files.readString(Paths.get(RUNES_AND_RUNE_STYLES_FILE_PATH));
-            JsonNode node = MAPPER.readTree(content);
-            List<RuneStyle> runeStyles = new ArrayList<>();
-            for(JsonNode runeStyle: node) {
-                runeStyles.add(new RuneStyle(runeStyle.get("id").asInt(),
+    private void loadRuneStyles() {
+        try(InputStream in = new URI(String.format("%scdn/%s/data/%s/runesReforged.json", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openStream()) {
+            Map<Integer, RuneStyle> runeStyles = new HashMap<>();
+            for(JsonNode runeStyle: MAPPER.readTree(in)) {
+                int id = runeStyle.get("id").asInt();
+                runeStyles.put(id, new RuneStyle(id,
                         runeStyle.get("name").asText(),
                         runeStyle.get("icon").asText(),
                         runeStyle.get("key").asText())
                 );
             }
             setFieldInCollection(RuneStyles.class, runeStyles);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
     }
 
-    private void loadRunes(){
-        try {
-            String content = Files.readString(Paths.get(RUNES_AND_RUNE_STYLES_FILE_PATH));
-            JsonNode json = MAPPER.readTree(content);
-            List<Rune> runes = new ArrayList<>();
-            for(JsonNode runeStyle: json) {
+    private void loadRunes() {
+        try(InputStream in = new URI(String.format("%scdn/%s/data/%s/runesReforged.json", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openStream()) {
+            Map<Integer, Rune> runes = new HashMap<>();
+            for(JsonNode runeStyle: MAPPER.readTree(in)) {
                 for (JsonNode slot : runeStyle.get("slots")) {
                     for (JsonNode rune: slot.get("runes")) {
-                        runes.add(new Rune(rune.get("id").asInt(),
+                        int id = rune.get("id").asInt();
+                        runes.put(id, new Rune(id,
                                 rune.get("name").asText(),
                                 rune.get("icon").asText(),
                                 rune.get("key").asText(),
@@ -137,347 +120,199 @@ public class LoLLoader extends Loader {
                 }
             }
             setFieldInCollection(Runes.class, runes);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
     }
 
-    private void updateRuneStatsFile(){
-        try (Scanner sc = new Scanner(new URL("https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/perks.json").openStream())) {
-            sc.useDelimiter("\n");
-            StringBuilder sb = new StringBuilder();
-            while(sc.hasNext()) {
-                sb.append(sc.next());
-            }
-            JsonNode json = MAPPER.readTree(sb.toString());
-            Iterator<JsonNode> iterator = json.iterator();
+    private void loadRuneStats() {
+        try (InputStream in = new URI("https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/perks.json").toURL().openStream()) {
+            Iterator<JsonNode> iterator = MAPPER.readTree(in).iterator();
+            Map<Integer, RuneStat> runeStats = new HashMap<>();
             while (iterator.hasNext()) {
-                int id = iterator.next().get("id").asInt();
-                if(id < 5000 || id > 5999) {
-                    iterator.remove();
+                JsonNode runeStyle = iterator.next();
+                int id = runeStyle.get("id").asInt();
+                if(id >= 5000 && id <= 5999) {
+                    runeStats.put(id, new RuneStat(id,
+                            runeStyle.get("name").asText(),
+                            runeStyle.get("iconPath").asText(),
+                            runeStyle.get("shortDesc").asText(),
+                            runeStyle.get("longDesc").asText())
+                    );
                 }
             }
-            Files.writeString(Paths.get(RUNE_STATS_FILE_PATH), json.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void loadRuneStats(){
-        try {
-            String content = Files.readString(Paths.get(RUNE_STATS_FILE_PATH));
-            JsonNode node = MAPPER.readTree(content);
-            List<RuneStat> runeStats = new ArrayList<>();
-            for(JsonNode runeStyle: node) {
-                String iconPath = runeStyle.get("iconPath").asText();
-                runeStats.add(new RuneStat(runeStyle.get("id").asInt(),
-                        runeStyle.get("name").asText(),
-                        iconPath.substring(iconPath.indexOf("perk-images/")),
-                        runeStyle.get("shortDesc").asText(),
-                        runeStyle.get("longDesc").asText())
-                );
-            }
             setFieldInCollection(RuneStats.class, runeStats);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
     }
 
-    private void updateMapsFile(){
-        try(BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(String.format("%scdn/%s/data/%s/map.json", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, Settings.getLanguage().toString())).openStream()));
-            BufferedWriter writer = new BufferedWriter(new FileWriter(MAPS_FILE_PATH))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                writer.write(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void loadMaps(){
-        try {
-            String content = Files.readString(Paths.get(MAPS_FILE_PATH));
-            JsonNode node = MAPPER.readTree(content);
-            List<net.petersil98.thresh.data.Map> maps = new ArrayList<>();
-            for(JsonNode map: node.get("data")) {
+    private void loadMaps() {
+        try(InputStream in = new URI(String.format("%scdn/%s/data/%s/map.json", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openStream()) {
+            Map<Integer, net.petersil98.thresh.data.Map> maps = new HashMap<>();
+            for(JsonNode map: MAPPER.readTree(in).get("data")) {
                 Sprite sprite = new Sprite(map.get("image").get("sprite").asText(),
                         map.get("image").get("group").asText(),
                         map.get("image").get("x").asInt(),
                         map.get("image").get("y").asInt(),
                         map.get("image").get("w").asInt(),
                         map.get("image").get("h").asInt());
-                maps.add(new net.petersil98.thresh.data.Map(map.get("MapId").asInt(),
+                int id = map.get("MapId").asInt();
+                maps.put(id, new net.petersil98.thresh.data.Map(id,
                         map.get("MapName").asText(),
                         map.get("image").get("full").asText(),
                         sprite)
                 );
             }
             setFieldInCollection(Maps.class, maps);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
     }
 
-    private void updateChampionsFile(){
-        try {
-            String json = createChampionsJSON();
-            Files.writeString(Paths.get(CHAMPIONS_FILE_PATH), json);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void loadChampions(){
-        try {
-            String content = Files.readString(Paths.get(CHAMPIONS_FILE_PATH));
-            setFieldInCollection(Champions.class, MAPPER.readValue(content, TypeFactory.defaultInstance().constructCollectionType(List.class, Champion.class)));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void updateQueueTypesFile(){
-        try(BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(String.format("%squeues.json", Constants.STATIC_DATA_BASE_PATH)).openStream()));
-            BufferedWriter writer = new BufferedWriter(new FileWriter(QUEUE_TYPES_FILE_PATH))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                writer.write(line.trim());
+    private void loadChampions() {
+        //TODO: Add Spells and Passive to Champion
+        try(InputStream in = new URI(String.format("%scdn/%s/data/%s/championFull.json", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openConnection().getInputStream()) {
+            Map<Integer, Champion> champions = new HashMap<>();
+            for(JsonNode champion: MAPPER.readTree(in).get("data")) {
+                JsonNode spriteNode = champion.get("image");
+                Sprite sprite = new Sprite(spriteNode.get("sprite").asText(), spriteNode.get("group").asText(),
+                        spriteNode.get("x").asInt(), spriteNode.get("y").asInt(), spriteNode.get("w").asInt(), spriteNode.get("h").asInt());
+                List<Skin> skins = StreamSupport.stream(champion.get("skins").spliterator(), false)
+                                .map(node -> new Skin(node.get("id").asInt(), node.get("num").asInt(),
+                                        node.get("name").asText(), node.get("chromas").asBoolean())).toList();
+                JsonNode infoNode = champion.get("info");
+                Info info = new Info(infoNode.get("attack").asInt(), infoNode.get("defense").asInt(),
+                        infoNode.get("magic").asInt(),infoNode.get("difficulty").asInt());
+                JsonNode statsNode = champion.get("stats");
+                Stats stats = new Stats((float) statsNode.get("hp").asDouble(), (float) statsNode.get("hpperlevel").asDouble(),
+                        (float) statsNode.get("mp").asDouble(), (float) statsNode.get("mpperlevel").asDouble(), statsNode.get("movespeed").asInt(),
+                        (float) statsNode.get("armor").asDouble(), (float) statsNode.get("armorperlevel").asDouble(),
+                        (float) statsNode.get("spellblock").asDouble(), (float) statsNode.get("spellblockperlevel").asDouble(),
+                        statsNode.get("attackrange").asInt(), (float) statsNode.get("hpregen").asDouble(),
+                        (float) statsNode.get("hpregenperlevel").asDouble(), (float) statsNode.get("mpregen").asDouble(),
+                        (float) statsNode.get("mpregenperlevel").asDouble(), (float) statsNode.get("crit").asDouble(),
+                        (float) statsNode.get("critperlevel").asDouble(), (float) statsNode.get("attackdamage").asDouble(),
+                        (float) statsNode.get("attackdamageperlevel").asDouble(), (float) statsNode.get("attackspeed").asDouble(),
+                        (float) statsNode.get("attackspeedperlevel").asDouble());
+                int id = champion.get("key").asInt();
+                champions.put(id, new Champion(id, champion.get("name").asText(),
+                        champion.get("title").asText(), spriteNode.get("full").asText(), sprite, skins, champion.get("lore").asText(),
+                        MAPPER.readValue(champion.get("allytips").toString(), TypeFactory.defaultInstance().constructCollectionType(List.class, String.class)),
+                        MAPPER.readValue(champion.get("enemytips").toString(), TypeFactory.defaultInstance().constructCollectionType(List.class, String.class)),
+                        MAPPER.readValue(champion.get("tags").toString(), TypeFactory.defaultInstance().constructCollectionType(List.class, String.class)),
+                        champion.get("partype").asText(), info, stats));
             }
-        } catch (IOException e) {
+            setFieldInCollection(Champions.class, champions);
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
     }
 
-    private void loadQueueTypes(){
-        try {
-            String content = Files.readString(Paths.get(QUEUE_TYPES_FILE_PATH));
-            setFieldInCollection(QueueTypes.class, MAPPER.readValue(content, TypeFactory.defaultInstance().constructCollectionType(List.class, QueueType.class)));
-        } catch (IOException e) {
+    private void loadQueueTypes() {
+        try(InputStream in = new URI(String.format("%squeues.json", Constants.STATIC_DATA_BASE_PATH)).toURL().openStream()) {
+            List<QueueType> queueTypes = MAPPER.readerForListOf(QueueType.class).readValue(in);
+            setFieldInCollection(QueueTypes.class, queueTypes.stream().collect(Collectors.toMap(QueueType::getId, queueType -> queueType)));
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
     }
 
-    private void updateItemsFile(){
-        try (Scanner sc = new Scanner(new URL(String.format("%scdn/%s/data/%s/item.json", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, Settings.getLanguage().toString())).openStream())){
-            sc.useDelimiter("\n");
-            StringBuilder sb = new StringBuilder();
-            while(sc.hasNext()) {
-                sb.append(sc.next());
-            }
-            JsonNode json = MAPPER.readTree(sb.toString());
-            for(JsonNode item: json.get("data")) {
-                ((ObjectNode) item).remove("colloq");
-            }
-            Files.writeString(Paths.get(ITEMS_FILE_PATH), json.get("data").toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void loadItems(){
-        try {
+    private void loadItems() {
+        try (InputStream in = new URI(String.format("%scdn/%s/data/%s/item.json", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openStream()){
             ITEMS_FROM.clear();
             ITEMS_INTO.clear();
             ITEMS_SPECIAL_RECIPE.clear();
-            String content = Files.readString(Paths.get(ITEMS_FILE_PATH));
-            java.util.Map<String, JsonNode> nodes = MAPPER.readValue(content, new TypeReference<Map<String, JsonNode>>(){});
-            List<Item> items = new ArrayList<>();
-            for(java.util.Map.Entry<String, JsonNode> entry: nodes.entrySet()) {
-                JsonNode node = MAPPER.readTree(entry.getValue().toString());
-                java.util.Map<Integer, Boolean> maps = MAPPER.readValue(node.get("maps").toString(), new TypeReference<java.util.Map<Integer, Boolean>>() {});
-                items.add(new Item(Integer.parseInt(entry.getKey()),
-                                node.get("name").asText(),
-                                node.get("gold").get("base").asInt(),
-                                node.get("gold").get("total").asInt(),
-                                node.get("gold").get("sell").asInt(),
-                                node.get("gold").get("purchasable").asBoolean(),
-                                node.get("description").asText(),
-                                node.get("plaintext").asText(),
-                                node.has("consumed") && node.get("consumed").asBoolean(),
-                                node.has("stacks") ? node.get("stacks").asInt() : 1,
-                                node.has("depth") ? node.get("depth").asInt() : 1,
-                                node.has("consumeOnFull") && node.get("consumeOnFull").asBoolean(),
-                                node.has("inStore") && node.get("inStore").asBoolean(),
-                                node.has("hideFromAll") && node.get("hideFromAll").asBoolean(),
-                                node.has("requiredChampion") ? Champions.getChampionByName(node.get("requiredChampion").asText()) : null,
-                                node.has("requiredAlly") ? Champions.getChampionByName(node.get("requiredAlly").asText()) : null,
-                                MAPPER.readValue(node.get("stats").toString(), new TypeReference<java.util.Map<String, Float>>() {}),
-                                MAPPER.readValue(node.get("tags").toString(), new TypeReference<List<String>>() {}),
+            Map<Integer, Item> items = new HashMap<>();
+            Map<Integer, JsonNode> itemNodes = MAPPER.readValue(MAPPER.readTree(in).get("data").toString(), TypeFactory.defaultInstance().constructMapType(Map.class, Integer.class, JsonNode.class));
+            for(Map.Entry<Integer, JsonNode> itemNode: itemNodes.entrySet()) {
+                JsonNode item = itemNode.getValue();
+                java.util.Map<Integer, Boolean> maps = MAPPER.readValue(item.get("maps").toString(), TypeFactory.defaultInstance().constructMapType(Map.class, Integer.class, Boolean.class));
+                items.put(itemNode.getKey(), new Item(itemNode.getKey(),
+                        item.get("name").asText(),
+                        item.get("gold").get("base").asInt(),
+                        item.get("gold").get("total").asInt(),
+                        item.get("gold").get("sell").asInt(),
+                        item.get("gold").get("purchasable").asBoolean(),
+                        item.get("description").asText(),
+                        item.get("plaintext").asText(),
+                        item.has("consumed") && item.get("consumed").asBoolean(),
+                        item.has("stacks") ? item.get("stacks").asInt() : 1,
+                        item.has("depth") ? item.get("depth").asInt() : 1,
+                        item.has("consumeOnFull") && item.get("consumeOnFull").asBoolean(),
+                        item.has("inStore") && item.get("inStore").asBoolean(),
+                        item.has("hideFromAll") && item.get("hideFromAll").asBoolean(),
+                        item.has("requiredChampion") ? Champions.getChampionByName(item.get("requiredChampion").asText()) : null,
+                        item.has("requiredAlly") ? Champions.getChampionByName(item.get("requiredAlly").asText()) : null,
+                                MAPPER.readValue(item.get("stats").toString(), TypeFactory.defaultInstance().constructMapType(Map.class, String.class, Float.class)),
+                                MAPPER.readValue(item.get("tags").toString(), TypeFactory.defaultInstance().constructCollectionType(List.class, String.class)),
                                 maps.entrySet().stream().filter(java.util.Map.Entry::getValue).map(mapEntry -> Maps.getMap(mapEntry.getKey())).collect(Collectors.toList()),
                                 new Sprite(
-                                        node.get("image").get("sprite").asText(),
-                                        node.get("image").get("sprite").asText(),
-                                        node.get("image").get("x").asInt(),
-                                        node.get("image").get("y").asInt(),
-                                        node.get("image").get("w").asInt(),
-                                        node.get("image").get("h").asInt()),
-                                node.get("image").get("full").asText(),
-                                node.has("effect") ? MAPPER.readValue(node.get("effect").toString(), new TypeReference<java.util.Map<String, String>>() {}) : java.util.Map.of()
-                        )
-                );
-                if(node.has("from")) {
-                    ITEMS_FROM.put(Integer.parseInt(entry.getKey()), MAPPER.readValue(node.get("from").toString(), new TypeReference<List<Integer>>() {}));
+                                        item.get("image").get("sprite").asText(),
+                                        item.get("image").get("sprite").asText(),
+                                        item.get("image").get("x").asInt(),
+                                        item.get("image").get("y").asInt(),
+                                        item.get("image").get("w").asInt(),
+                                        item.get("image").get("h").asInt()),
+                        item.get("image").get("full").asText(),
+                        item.has("effect") ? MAPPER.readValue(item.get("effect").toString(), TypeFactory.defaultInstance().constructMapType(Map.class, String.class, String.class)) : java.util.Map.of()
+                ));
+                if(item.has("from")) {
+                    ITEMS_FROM.put(itemNode.getKey(), MAPPER.readValue(item.get("from").toString(), TypeFactory.defaultInstance().constructCollectionType(List.class, Integer.class)));
                 }
-                if(node.has("into")) {
-                    ITEMS_INTO.put(Integer.parseInt(entry.getKey()), MAPPER.readValue(node.get("into").toString(), new TypeReference<List<Integer>>() {}));
+                if(item.has("into")) {
+                    ITEMS_INTO.put(itemNode.getKey(), MAPPER.readValue(item.get("into").toString(), TypeFactory.defaultInstance().constructCollectionType(List.class, Integer.class)));
                 }
-                if(node.has("specialRecipe")) {
-                    ITEMS_SPECIAL_RECIPE.put(Integer.parseInt(entry.getKey()), node.get("specialRecipe").asInt());
+                if(item.has("specialRecipe")) {
+                    ITEMS_SPECIAL_RECIPE.put(itemNode.getKey(), item.get("specialRecipe").asInt());
                 }
             }
             setFieldInCollection(Items.class, items);
             Items.getItems().forEach(Item::postInit);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
     }
 
-    private void updateSummonerSpellsFile(){
-        try (Scanner sc = new Scanner(new URL(String.format("%scdn/%s/data/%s/summoner.json", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, Settings.getLanguage().toString())).openStream())) {
-            sc.useDelimiter("\n");
-            StringBuilder sb = new StringBuilder();
-            while(sc.hasNext()) {
-                sb.append(sc.next());
+    private void loadSummonerSpells() {
+        //TODO: Check modes
+        try (InputStream in = new URI(String.format("%scdn/%s/data/%s/summoner.json", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openStream()) {
+            Map<Integer, SummonerSpell> summonerSpells = new HashMap<>();
+            for(JsonNode summonerSpell: MAPPER.readTree(in).get("data")) {
+                int id = summonerSpell.get("key").asInt();
+                summonerSpells.put(id, new SummonerSpell(id,
+                        summonerSpell.get("name").asText(),
+                        summonerSpell.get("description").asText(),
+                        summonerSpell.get("cooldown").get(0).asInt(),
+                        summonerSpell.get("summonerLevel").asInt(),
+                        summonerSpell.get("range").get(0).asInt(),
+                        MAPPER.readValue(summonerSpell.get("modes").toString(), TypeFactory.defaultInstance().constructCollectionType(List.class, String.class)),
+                        new Sprite(
+                                summonerSpell.get("image").get("sprite").asText(),
+                                summonerSpell.get("image").get("sprite").asText(),
+                                summonerSpell.get("image").get("x").asInt(),
+                                summonerSpell.get("image").get("y").asInt(),
+                                summonerSpell.get("image").get("w").asInt(),
+                                summonerSpell.get("image").get("h").asInt()),
+                        summonerSpell.get("image").get("full").asText()
+                ));
             }
-            JsonNode json = MAPPER.readTree(sb.toString());
-            for(JsonNode summonerSpell: json.get("data")) {
-                ((ObjectNode) summonerSpell).remove("tooltip");
-                ((ObjectNode) summonerSpell).remove("cooldownBurn");
-                ((ObjectNode) summonerSpell).remove("cost");
-                ((ObjectNode) summonerSpell).remove("costBurn");
-                ((ObjectNode) summonerSpell).remove("datavalues");
-                ((ObjectNode) summonerSpell).remove("effect");
-                ((ObjectNode) summonerSpell).remove("effectBurn");
-                ((ObjectNode) summonerSpell).remove("vars");
-                ((ObjectNode) summonerSpell).remove("costType");
-                ((ObjectNode) summonerSpell).remove("maxammo");
-                ((ObjectNode) summonerSpell).remove("rangeBurn");
-                ((ObjectNode) summonerSpell).remove("resource");
-                ((ObjectNode) summonerSpell).set("cooldown", summonerSpell.get("cooldown").get(0));
-                ((ObjectNode) summonerSpell).set("range", summonerSpell.get("range").get(0));
-            }
-            Files.writeString(Paths.get(SUMMONER_SPELLS_FILE_PATH), json.get("data").toString());
-        } catch (IOException e) {
+            setFieldInCollection(SummonerSpells.class, summonerSpells);
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
     }
 
-    private void loadSummonerSpells(){
-        try {
-            String content = Files.readString(Paths.get(SUMMONER_SPELLS_FILE_PATH));
-            JsonNode summonerSpells = MAPPER.readTree(content);
-            List<SummonerSpell> list = new ArrayList<>();
-            for(JsonNode summonerSpell: summonerSpells) {
-                list.add(new SummonerSpell(summonerSpell.get("key").asInt(),
-                                summonerSpell.get("name").asText(),
-                                summonerSpell.get("description").asText(),
-                                summonerSpell.get("cooldown").asInt(),
-                                summonerSpell.get("summonerLevel").asInt(),
-                                summonerSpell.get("range").asInt(),
-                                MAPPER.readValue(summonerSpell.get("modes").toString(), new TypeReference<List<String>>() {}),
-                                new Sprite(
-                                        summonerSpell.get("image").get("sprite").asText(),
-                                        summonerSpell.get("image").get("sprite").asText(),
-                                        summonerSpell.get("image").get("x").asInt(),
-                                        summonerSpell.get("image").get("y").asInt(),
-                                        summonerSpell.get("image").get("w").asInt(),
-                                        summonerSpell.get("image").get("h").asInt()),
-                                summonerSpell.get("image").get("full").asText()
-                        )
-                );
-            }
-            setFieldInCollection(SummonerSpells.class, list);
-        } catch (IOException e) {
+    private void loadChallenges() {
+        try(InputStream in = new URI(String.format("%scdn/%s/data/%s/challenges.json", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openStream()) {
+            List<Challenge> challenges = MAPPER.readerForListOf(Challenge.class).readValue(in);
+            setFieldInCollection(Challenges.class, challenges.stream().collect(Collectors.toMap(Challenge::getId, challenge -> challenge)));
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
     }
 
-    private void updateChallengesFile() {
-        try(BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(String.format("%scdn/%s/data/%s/challenges.json", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, Settings.getLanguage().toString())).openStream()));
-            BufferedWriter writer = new BufferedWriter(new FileWriter(CHALLENGES_FILE_PATH))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                writer.write(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void loadChallenges(){
-        try {
-            String content = Files.readString(Paths.get(CHALLENGES_FILE_PATH));
-            setFieldInCollection(Challenges.class, MAPPER.readValue(content, TypeFactory.defaultInstance().constructCollectionType(List.class, Challenge.class)));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String createChampionsJSON() {
-        try {
-            InputStream in = new URL(String.format("%scdn/%s/data/%s/championFull.json", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, Settings.getLanguage().toString())).openConnection().getInputStream();
-            JsonNode json = MAPPER.readTree(IOUtils.toString(new InputStreamReader(in)));
-            ArrayNode node = MAPPER.createArrayNode();
-            for(JsonNode champion: json.get("data")) {
-                renameFieldInNode((ObjectNode) champion, "key", "id");
-                ((ObjectNode) champion).set("fullImage", champion.get("image").get("full"));
-                ObjectNode sprite = MAPPER.createObjectNode();
-                sprite.set("sprite", champion.get("image").get("sprite"));
-                sprite.set("group", champion.get("image").get("group"));
-                sprite.set("x", champion.get("image").get("x"));
-                sprite.set("y", champion.get("image").get("y"));
-                sprite.set("width", champion.get("image").get("w"));
-                sprite.set("height", champion.get("image").get("h"));
-                ((ObjectNode) champion).set("sprite", sprite);
-                ((ObjectNode) champion).remove("image");
-                for(JsonNode skin: champion.get("skins")) {
-                    renameFieldInNode((ObjectNode) skin, "num", "id");
-                }
-                ((ObjectNode) champion).remove("blurb");
-                renameFieldInNode((ObjectNode) champion, "allytips", "allyTips");
-                renameFieldInNode((ObjectNode) champion, "enemytips", "enemyTips");
-                renameFieldInNode((ObjectNode) champion, "partype", "resourceType");
-                ((ObjectNode) champion).remove("info");
-                ObjectNode stats = (ObjectNode) champion.get("stats");
-                renameFieldInNode(stats, "hp", "health");
-                renameFieldInNode(stats, "hpperlevel", "healthPerLevel");
-                renameFieldInNode(stats, "mp", "resource");
-                renameFieldInNode(stats, "mpperlevel", "resourcePerLevel");
-                renameFieldInNode(stats, "movespeed", "movementSpeed");
-                renameFieldInNode(stats, "armorperlevel", "armorPerLevel");
-                renameFieldInNode(stats, "spellblock", "magicResist");
-                renameFieldInNode(stats, "spellblockperlevel", "magicResistPerLevel");
-                renameFieldInNode(stats, "attackrange", "attackRange");
-                renameFieldInNode(stats, "hpregen", "healthRegeneration");
-                renameFieldInNode(stats, "hpregenperlevel", "healthRegenerationPerLevel");
-                renameFieldInNode(stats, "mpregen", "resourceRegeneration");
-                renameFieldInNode(stats, "mpregenperlevel", "resourceRegenerationPerLevel");
-                renameFieldInNode(stats, "crit", "critChance");
-                renameFieldInNode(stats, "critperlevel", "critChancePerLevel");
-                renameFieldInNode(stats, "attackdamage", "attackDamage");
-                renameFieldInNode(stats, "attackdamageperlevel", "attackDamagePerLevel");
-                renameFieldInNode(stats, "attackspeed", "attackSpeed");
-                renameFieldInNode(stats, "attackspeedperlevel", "attackSpeedPerLevel");
-                renameFieldInNode(stats, "attackdamage", "attackDamage");
-                ((ObjectNode) champion).remove("spells");
-                ((ObjectNode) champion).remove("passive");
-                ((ObjectNode) champion).remove("recommended");
-                node.add(champion);
-            }
-            return node.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    private void renameFieldInNode(ObjectNode node, String fieldName, String newFieldName) {
-        node.set(newFieldName, node.get(fieldName));
-        node.remove(fieldName);
-    }
-
-    private void setFieldInCollection(Class<?> collectionClass, List<?> elements) {
+    private void setFieldInCollection(Class<?> collectionClass, Map<?, ?> elements) {
         try {
             char[] fieldName = collectionClass.getSimpleName().toCharArray();
             fieldName[0] += 32;

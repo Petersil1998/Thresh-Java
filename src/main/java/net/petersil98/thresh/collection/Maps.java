@@ -2,17 +2,18 @@ package net.petersil98.thresh.collection;
 
 import net.petersil98.thresh.data.Map;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Maps {
 
-    private static List<Map> maps;
+    private static java.util.Map<Integer, Map> maps;
 
     public static Map getMap(int id){
-        return maps.stream().filter(map -> map.id() == id).findFirst().orElse(null);
+        return maps.get(id);
     }
 
     public static List<Map> getMaps() {
-        return maps;
+        return new ArrayList<>(maps.values());
     }
 }
