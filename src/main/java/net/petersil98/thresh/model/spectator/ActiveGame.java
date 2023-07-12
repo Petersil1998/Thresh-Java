@@ -3,9 +3,9 @@ package net.petersil98.thresh.model.spectator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import net.petersil98.core.constant.Constants;
 import net.petersil98.core.constant.Platform;
-import net.petersil98.core.http.RiotAPI;
 import net.petersil98.thresh.data.Map;
 import net.petersil98.thresh.data.QueueType;
+import net.petersil98.thresh.http.LoLAPI;
 import net.petersil98.thresh.model.Deserializers;
 
 import java.util.List;
@@ -45,7 +45,7 @@ public class ActiveGame {
     }
 
     public static ActiveGame ofSummoner(String summonerID, Platform platform) {
-        return RiotAPI.requestLoLSpectatorEndpoint("active-games/by-summoner/", summonerID, platform, ActiveGame.class);
+        return LoLAPI.requestLoLSpectatorEndpoint("active-games/by-summoner/", summonerID, platform, ActiveGame.class);
     }
 
     public long getGameId() {

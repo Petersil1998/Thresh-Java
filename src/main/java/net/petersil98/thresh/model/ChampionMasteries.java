@@ -3,8 +3,8 @@ package net.petersil98.thresh.model;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import net.petersil98.core.constant.Platform;
-import net.petersil98.core.http.RiotAPI;
 import net.petersil98.thresh.data.champion.Champion;
+import net.petersil98.thresh.http.LoLAPI;
 
 import java.util.List;
 import java.util.Objects;
@@ -27,14 +27,14 @@ public class ChampionMasteries {
 
     public int getTotalMasteryPoints() {
         if(this.totalMasteryPoints == -1) {
-            this.totalMasteryPoints = RiotAPI.requestLoLChampionMasteryEndpoint("scores/by-summoner/", this.summonerId, this.platform, Integer.class);
+            this.totalMasteryPoints = LoLAPI.requestLoLChampionMasteryEndpoint("scores/by-summoner/", this.summonerId, this.platform, Integer.class);
         }
         return this.totalMasteryPoints;
     }
 
     public List<Mastery> getChampionMasteries() {
         if(this.masteries == null) {
-            this.masteries = RiotAPI.requestLoLChampionMasteryEndpoint("champion-masteries/by-summoner/", this.summonerId, this.platform, TypeFactory.defaultInstance().constructCollectionType(List.class, Mastery.class));
+            this.masteries = LoLAPI.requestLoLChampionMasteryEndpoint("champion-masteries/by-summoner/", this.summonerId, this.platform, TypeFactory.defaultInstance().constructCollectionType(List.class, Mastery.class));
         }
         return this.masteries;
     }

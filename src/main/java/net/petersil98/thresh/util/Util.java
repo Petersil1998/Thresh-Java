@@ -1,8 +1,8 @@
 package net.petersil98.thresh.util;
 
 import net.petersil98.core.constant.Constants;
-import net.petersil98.core.constant.RankedTier;
 import net.petersil98.core.util.InvalidFilterException;
+import net.petersil98.stcommons.constants.RankedTier;
 import net.petersil98.thresh.collection.QueueTypes;
 import net.petersil98.thresh.data.Challenge;
 import net.petersil98.thresh.data.champion.Champion;

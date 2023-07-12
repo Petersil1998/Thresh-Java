@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import net.petersil98.core.constant.Platform;
 import net.petersil98.core.constant.Region;
-import net.petersil98.core.http.RiotAPI;
 import net.petersil98.thresh.data.Map;
 import net.petersil98.thresh.data.QueueType;
+import net.petersil98.thresh.http.LoLAPI;
 import net.petersil98.thresh.model.Deserializers;
 import net.petersil98.thresh.model.match.participant.MatchParticipant;
 import net.petersil98.thresh.model.match.timeline.Timeline;
@@ -54,7 +54,7 @@ public class MatchDetails {
     }
 
     public static MatchDetails getMatchDetails(String matchId, Region region) {
-        return RiotAPI.requestLoLMatchEndpoint("matches/", matchId, region, MatchDetails.class);
+        return LoLAPI.requestLoLMatchEndpoint("matches/", matchId, region, MatchDetails.class);
     }
 
     public long getGameCreation() {
@@ -119,7 +119,7 @@ public class MatchDetails {
 
     public static List<MatchDetails> getMatchHistory(String puuid, Region region, java.util.Map<String, String> filter) {
         Util.validateFilter(filter);
-        List<String> matchIds = RiotAPI.requestLoLMatchEndpoint("matches/by-puuid/", puuid + "/ids", region, TypeFactory.defaultInstance().constructCollectionType(List.class, String.class), filter);
+        List<String> matchIds = LoLAPI.requestLoLMatchEndpoint("matches/by-puuid/", puuid + "/ids", region, TypeFactory.defaultInstance().constructCollectionType(List.class, String.class), filter);
         return matchIds.stream().map(matchId -> MatchDetails.getMatchDetails(matchId, region)).toList();
     }
 

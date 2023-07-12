@@ -1,11 +1,15 @@
 package net.petersil98.thresh;
 
-import net.petersil98.core.constant.*;
+import net.petersil98.core.constant.Platform;
+import net.petersil98.core.constant.Region;
+import net.petersil98.core.model.Summoner;
 import net.petersil98.core.util.EncryptionUtil;
 import net.petersil98.core.util.Loader;
 import net.petersil98.core.util.settings.Language;
 import net.petersil98.core.util.settings.Settings;
-import net.petersil98.stcommons.model.Summoner;
+import net.petersil98.stcommons.constants.RankedDivision;
+import net.petersil98.stcommons.constants.RankedQueue;
+import net.petersil98.stcommons.constants.RankedTier;
 import net.petersil98.stcommons.model.league.League;
 import net.petersil98.stcommons.model.league.RankEntry;
 import net.petersil98.thresh.collection.*;
@@ -47,7 +51,7 @@ public class Thresh {
         List<RankEntry> leagueEntries = LoLRanked.getRankEntries(RankedDivision.I, RankedTier.BRONZE, RankedQueue.FLEX, Platform.EUW);
         MatchDetails details = MatchDetails.getMatchDetails("EUW1_987654321", Region.EUROPE);
         System.out.println(Util.getChallengeIconURL(Challenges.getChallenges().stream().filter(challenge -> !challenge.getLevelToIconPath().isEmpty()).findAny().get(), RankedTier.BRONZE));
-        ActiveGame game = ActiveGame.ofSummoner(Summoner.getSummonerByName("katikaze", Platform.EUW).getId(), Platform.EUW);
+        ActiveGame game = ActiveGame.ofSummoner(Summoner.getSummonerByName("ninii", Platform.EUW).getId(), Platform.EUW);
         System.out.println(game.getSpectatorCommandWindows("C:\\"));
         System.out.println(Util.getProfileIconURL(me.getProfileIcon()));
         System.out.println(Util.getChampionIconURL(Champions.getChampionByName("Thresh")));

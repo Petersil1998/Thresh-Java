@@ -1,6 +1,6 @@
 package net.petersil98.thresh.data;
 
-import net.petersil98.core.constant.RankedTier;
+import net.petersil98.stcommons.constants.RankedTier;
 
 import java.util.List;
 import java.util.Map;
