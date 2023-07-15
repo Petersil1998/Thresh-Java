@@ -3,12 +3,13 @@ package net.petersil98.thresh.util;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import net.petersil98.core.Core;
-import net.petersil98.core.constant.Constants;
-import net.petersil98.core.data.Sprite;
 import net.petersil98.core.util.Loader;
 import net.petersil98.core.util.settings.Settings;
+import net.petersil98.stcommons.constants.STConstants;
+import net.petersil98.stcommons.data.Sprite;
 import net.petersil98.thresh.Thresh;
 import net.petersil98.thresh.collection.*;
+import net.petersil98.thresh.constants.LoLConstants;
 import net.petersil98.thresh.data.Challenge;
 import net.petersil98.thresh.data.Item;
 import net.petersil98.thresh.data.QueueType;
@@ -28,7 +29,10 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -59,12 +63,12 @@ public class LoLLoader extends Loader {
 
     @Override
     protected boolean shouldReloadData() {
-        String versionsUrl = Constants.DDRAGON_BASE_PATH + "api/versions.json";
+        String versionsUrl = STConstants.DDRAGON_BASE_PATH + "api/versions.json";
         try(InputStream lolVersion = URI.create(versionsUrl).toURL().openConnection().getInputStream()) {
             String[] versions = Core.MAPPER.readValue(IOUtils.toString(new InputStreamReader(lolVersion)), TypeFactory.defaultInstance().constructArrayType(String.class));
-            Constants.DDRAGON_VERSION = versions[0];
-            if(!latestDDragonVersion.equals(Constants.DDRAGON_VERSION)) {
-                latestDDragonVersion = Constants.DDRAGON_VERSION;
+            STConstants.DDRAGON_VERSION = versions[0];
+            if(!latestDDragonVersion.equals(STConstants.DDRAGON_VERSION)) {
+                latestDDragonVersion = STConstants.DDRAGON_VERSION;
                 return true;
             }
         } catch (IOException e) {
@@ -74,10 +78,10 @@ public class LoLLoader extends Loader {
     }
 
     private static void loadLatestVersions() {
-        String versionsUrl = Constants.DDRAGON_BASE_PATH + "api/versions.json";
+        String versionsUrl = STConstants.DDRAGON_BASE_PATH + "api/versions.json";
         try(InputStream lolVersion = URI.create(versionsUrl).toURL().openConnection().getInputStream()) {
             String[] versions = Core.MAPPER.readValue(IOUtils.toString(new InputStreamReader(lolVersion)), TypeFactory.defaultInstance().constructArrayType(String.class));
-            Constants.DDRAGON_VERSION = versions[0];
+            STConstants.DDRAGON_VERSION = versions[0];
             latestDDragonVersion = versions[0];
         } catch (IOException e) {
             e.printStackTrace();
@@ -85,7 +89,7 @@ public class LoLLoader extends Loader {
     }
 
     private void loadRuneStyles() {
-        try(InputStream in = new URI(String.format("%scdn/%s/data/%s/runesReforged.json", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openStream()) {
+        try(InputStream in = new URI(String.format("%scdn/%s/data/%s/runesReforged.json", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openStream()) {
             Map<Integer, RuneStyle> runeStyles = new HashMap<>();
             for(JsonNode runeStyle: MAPPER.readTree(in)) {
                 int id = runeStyle.get("id").asInt();
@@ -102,7 +106,7 @@ public class LoLLoader extends Loader {
     }
 
     private void loadRunes() {
-        try(InputStream in = new URI(String.format("%scdn/%s/data/%s/runesReforged.json", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openStream()) {
+        try(InputStream in = new URI(String.format("%scdn/%s/data/%s/runesReforged.json", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openStream()) {
             Map<Integer, Rune> runes = new HashMap<>();
             for(JsonNode runeStyle: MAPPER.readTree(in)) {
                 for (JsonNode slot : runeStyle.get("slots")) {
@@ -148,7 +152,7 @@ public class LoLLoader extends Loader {
     }
 
     private void loadMaps() {
-        try(InputStream in = new URI(String.format("%scdn/%s/data/%s/map.json", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openStream()) {
+        try(InputStream in = new URI(String.format("%scdn/%s/data/%s/map.json", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openStream()) {
             Map<Integer, net.petersil98.thresh.data.Map> maps = new HashMap<>();
             for(JsonNode map: MAPPER.readTree(in).get("data")) {
                 Sprite sprite = new Sprite(map.get("image").get("sprite").asText(),
@@ -172,7 +176,7 @@ public class LoLLoader extends Loader {
 
     private void loadChampions() {
         //TODO: Add Spells and Passive to Champion
-        try(InputStream in = new URI(String.format("%scdn/%s/data/%s/championFull.json", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openConnection().getInputStream()) {
+        try(InputStream in = new URI(String.format("%scdn/%s/data/%s/championFull.json", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openConnection().getInputStream()) {
             Map<Integer, Champion> champions = new HashMap<>();
             for(JsonNode champion: MAPPER.readTree(in).get("data")) {
                 JsonNode spriteNode = champion.get("image");
@@ -210,7 +214,7 @@ public class LoLLoader extends Loader {
     }
 
     private void loadQueueTypes() {
-        try(InputStream in = new URI(String.format("%squeues.json", Constants.STATIC_DATA_BASE_PATH)).toURL().openStream()) {
+        try(InputStream in = new URI(String.format("%squeues.json", LoLConstants.STATIC_DATA_BASE_PATH)).toURL().openStream()) {
             List<QueueType> queueTypes = MAPPER.readerForListOf(QueueType.class).readValue(in);
             setFieldInCollection(QueueTypes.class, queueTypes.stream().collect(Collectors.toMap(QueueType::getId, queueType -> queueType)));
         } catch (IOException | URISyntaxException e) {
@@ -219,7 +223,7 @@ public class LoLLoader extends Loader {
     }
 
     private void loadItems() {
-        try (InputStream in = new URI(String.format("%scdn/%s/data/%s/item.json", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openStream()){
+        try (InputStream in = new URI(String.format("%scdn/%s/data/%s/item.json", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openStream()){
             ITEMS_FROM.clear();
             ITEMS_INTO.clear();
             ITEMS_SPECIAL_RECIPE.clear();
@@ -276,7 +280,7 @@ public class LoLLoader extends Loader {
 
     private void loadSummonerSpells() {
         //TODO: Check modes
-        try (InputStream in = new URI(String.format("%scdn/%s/data/%s/summoner.json", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openStream()) {
+        try (InputStream in = new URI(String.format("%scdn/%s/data/%s/summoner.json", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openStream()) {
             Map<Integer, SummonerSpell> summonerSpells = new HashMap<>();
             for(JsonNode summonerSpell: MAPPER.readTree(in).get("data")) {
                 int id = summonerSpell.get("key").asInt();
@@ -304,7 +308,7 @@ public class LoLLoader extends Loader {
     }
 
     private void loadChallenges() {
-        try(InputStream in = new URI(String.format("%scdn/%s/data/%s/challenges.json", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openStream()) {
+        try(InputStream in = new URI(String.format("%scdn/%s/data/%s/challenges.json", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openStream()) {
             List<Challenge> challenges = MAPPER.readerForListOf(Challenge.class).readValue(in);
             setFieldInCollection(Challenges.class, challenges.stream().collect(Collectors.toMap(Challenge::getId, challenge -> challenge)));
         } catch (IOException | URISyntaxException e) {

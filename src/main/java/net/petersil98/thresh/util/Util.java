@@ -1,8 +1,8 @@
 package net.petersil98.thresh.util;
 
-import net.petersil98.core.constant.Constants;
 import net.petersil98.core.util.InvalidFilterException;
 import net.petersil98.stcommons.constants.RankedTier;
+import net.petersil98.stcommons.constants.STConstants;
 import net.petersil98.thresh.collection.QueueTypes;
 import net.petersil98.thresh.data.Challenge;
 import net.petersil98.thresh.data.champion.Champion;
@@ -29,24 +29,24 @@ public class Util {
     }
 
     public static String getProfileIconURL(int profileIconId) {
-        return String.format("%scdn/%s/img/profileicon/%s.png", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, profileIconId);
+        return String.format("%scdn/%s/img/profileicon/%s.png", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION, profileIconId);
     }
 
     public static String getChampionIconURL(Champion champion) {
-        return String.format("%scdn/%s/img/champion/%s.png", Constants.DDRAGON_BASE_PATH, Constants.DDRAGON_VERSION, Util.getChampWithoutSpecials(champion.getName()));
+        return String.format("%scdn/%s/img/champion/%s.png", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION, Util.getChampWithoutSpecials(champion.getName()));
     }
 
     public static String getRuneIconURL(BaseRune rune) {
-        return String.format("%scdn/img/%s", Constants.DDRAGON_BASE_PATH, rune.getIconPath());
+        return String.format("%scdn/img/%s", STConstants.DDRAGON_BASE_PATH, rune.getIconPath());
     }
 
     public static String getRuneIconURL(RuneStyle rune) {
-        return String.format("%scdn/img/%s", Constants.DDRAGON_BASE_PATH, rune.getIconPath());
+        return String.format("%scdn/img/%s", STConstants.DDRAGON_BASE_PATH, rune.getIconPath());
     }
 
     public static String getChallengeIconURL(Challenge challenge, RankedTier tier) {
         if(!challenge.getLevelToIconPath().containsKey(tier)) return null;
-        return String.format("%scdn/img%s", Constants.DDRAGON_BASE_PATH, challenge.getLevelToIconPath().get(tier));
+        return String.format("%scdn/img%s", STConstants.DDRAGON_BASE_PATH, challenge.getLevelToIconPath().get(tier));
     }
 
     public static void validateFilter(java.util.Map<String, String> filter) {

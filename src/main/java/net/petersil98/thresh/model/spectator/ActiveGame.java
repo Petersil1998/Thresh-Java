@@ -1,8 +1,8 @@
 package net.petersil98.thresh.model.spectator;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import net.petersil98.core.constant.Constants;
 import net.petersil98.core.constant.Platform;
+import net.petersil98.thresh.constants.LoLConstants;
 import net.petersil98.thresh.data.Map;
 import net.petersil98.thresh.data.QueueType;
 import net.petersil98.thresh.http.LoLAPI;
@@ -101,7 +101,7 @@ public class ActiveGame {
     }
 
     public String getSpectatorCommandWindows(String pathToRiotFolder) {
-        String url = Constants.SPECTATOR_URL.replaceAll("\\{platform}", this.platform.toString());
+        String url = LoLConstants.SPECTATOR_URL.replaceAll("\\{platform}", this.platform.toString());
         return String.format("cd /d \"%sRiot Games\\League of Legends\\Game\" & \"League of Legends.exe\" \"spectator %s %s %d %s\" \"-UseRads\"",
                 pathToRiotFolder, url, this.getSpectatorKey(), this.getGameId(), this.getPlatform());
     }

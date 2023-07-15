@@ -1,6 +1,6 @@
 package net.petersil98.thresh.data.champion;
 
-import net.petersil98.core.data.Sprite;
+import net.petersil98.stcommons.data.Sprite;
 
 import java.util.List;
 

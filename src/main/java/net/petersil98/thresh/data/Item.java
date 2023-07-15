@@ -1,6 +1,6 @@
 package net.petersil98.thresh.data;
 
-import net.petersil98.core.data.Sprite;
+import net.petersil98.stcommons.data.Sprite;
 import net.petersil98.thresh.collection.Items;
 import net.petersil98.thresh.data.champion.Champion;
 import net.petersil98.thresh.util.LoLLoader;

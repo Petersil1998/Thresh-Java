@@ -51,7 +51,7 @@ public class Thresh {
         List<RankEntry> leagueEntries = LoLRanked.getRankEntries(RankedDivision.I, RankedTier.BRONZE, RankedQueue.FLEX, Platform.EUW);
         MatchDetails details = MatchDetails.getMatchDetails("EUW1_987654321", Region.EUROPE);
         System.out.println(Util.getChallengeIconURL(Challenges.getChallenges().stream().filter(challenge -> !challenge.getLevelToIconPath().isEmpty()).findAny().get(), RankedTier.BRONZE));
-        ActiveGame game = ActiveGame.ofSummoner(Summoner.getSummonerByName("ninii", Platform.EUW).getId(), Platform.EUW);
+        ActiveGame game = ActiveGame.ofSummoner(Summoner.getSummonerByName("prinzessin", Platform.EUW).getId(), Platform.EUW);
         System.out.println(game.getSpectatorCommandWindows("C:\\"));
         System.out.println(Util.getProfileIconURL(me.getProfileIcon()));
         System.out.println(Util.getChampionIconURL(Champions.getChampionByName("Thresh")));

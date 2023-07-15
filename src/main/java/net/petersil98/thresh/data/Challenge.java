@@ -15,18 +15,6 @@ public class Challenge {
     private Map<RankedTier, String> levelToIconPath;
     private Map<RankedTier, Threshold> thresholds;
 
-    public Challenge(int id, String name, String description, String shortDescription, boolean hasLeaderboard, Map<RankedTier, String> levelToIconPath, Map<RankedTier, Threshold> thresholds) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.shortDescription = shortDescription;
-        this.hasLeaderboard = hasLeaderboard;
-        this.levelToIconPath = levelToIconPath;
-        this.thresholds = thresholds;
-    }
-
-    public Challenge() {}
-
     public int getId() {
         return id;
     }
