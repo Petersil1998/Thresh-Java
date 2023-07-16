@@ -1,7 +1,10 @@
 package net.petersil98.thresh.model.match.participant;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import net.petersil98.thresh.data.Item;
+import net.petersil98.thresh.model.Deserializers;
 
+@JsonDeserialize(using = Deserializers.ChallengeStatsDeserializer.class)
 public class ChallengeStats {
 
     private final int twelveAssistStreakCount;

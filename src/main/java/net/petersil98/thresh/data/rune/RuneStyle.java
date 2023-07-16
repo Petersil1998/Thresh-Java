@@ -1,7 +1,11 @@
 package net.petersil98.thresh.data.rune;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import net.petersil98.thresh.model.Deserializers;
+
 import java.util.Objects;
 
+@JsonDeserialize(using = Deserializers.RuneStyleDeserializer.class)
 public class RuneStyle {
 
     protected int id;

@@ -1,9 +1,12 @@
 package net.petersil98.thresh.data;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import net.petersil98.stcommons.data.Sprite;
+import net.petersil98.thresh.model.Deserializers;
 
 import java.util.List;
 
+@JsonDeserialize(using = Deserializers.SummonerSpellDeserializer.class)
 public class SummonerSpell {
 
     private final int id;

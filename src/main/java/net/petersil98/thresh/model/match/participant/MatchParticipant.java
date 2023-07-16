@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import net.petersil98.thresh.data.Item;
 import net.petersil98.thresh.data.SummonerSpell;
 import net.petersil98.thresh.data.champion.Champion;
-import net.petersil98.thresh.data.rune.Rune;
 import net.petersil98.thresh.data.rune.RuneStat;
 import net.petersil98.thresh.data.rune.RuneStyle;
 import net.petersil98.thresh.model.Deserializers;
@@ -72,18 +71,12 @@ public class MatchParticipant {
     private final int firstBloodAssist;
     private final int firstTowerKill;
     private final int firstTowerAssist;
-    private final Rune keyStone;
-    private final RuneExtraData keyStoneExtraData;
-    private final Rune primarySub1;
-    private final RuneExtraData primarySub1ExtraData;
-    private final Rune primarySub2;
-    private final RuneExtraData primarySub2ExtraData;
-    private final Rune primarySub3;
-    private final RuneExtraData primarySub3ExtraData;
-    private final Rune secondarySub1;
-    private final RuneExtraData secondarySub1ExtraData;
-    private final Rune secondarySub2;
-    private final RuneExtraData secondarySub2ExtraData;
+    private final RuneData keyStoneData;
+    private final RuneData primarySub1Data;
+    private final RuneData primarySub2Data;
+    private final RuneData primarySub3Data;
+    private final RuneData secondarySub1Data;
+    private final RuneData secondarySub2Data;
     private final RuneStyle primaryStyle;
     private final RuneStyle secondaryStyle;
     private final RuneStat statDefense;
@@ -131,7 +124,7 @@ public class MatchParticipant {
     private final boolean eligibleForProgression;
     private final ChallengeStats challenges;
 
-    public MatchParticipant(int participantId, Champion champion, SummonerSpell summonerSpell1, SummonerSpell summonerSpell2, Item item0, Item item1, Item item2, Item item3, Item item4, Item item5, Item item6, int kills, int deaths, int assists, int largestKillingSpree, int largestMultiKill, int killingSprees, int longestTimeSpentLiving, int doubleKills, int tripleKills, int quadraKills, int pentaKills, int unrealKills, int totalDamageDealt, int magicDamageDealt, int physicalDamageDealt, int trueDamageDealt, int largestCriticalStrike, int totalDamageDealtToChampions, int magicDamageDealtToChampions, int physicalDamageDealtToChampions, int trueDamageDealtToChampions, int totalHeal, int totalUnitsHealed, int damageSelfMitigated, int damageDealtToObjectives, int damageDealtToTurrets, int visionScore, int timeCCingOthers, int totalDamageTaken, int magicDamageTaken, int physicalDamageTaken, int trueDamageTaken, int goldEarned, int goldSpent, int turretKills, int inhibitorKills, int totalMinionsKilled, int neutralMinionsKilled, int totalTimeCCDealt, int champLevel, int visionWardsBoughtInGame, int sightWardsBoughtInGame, int wardsPlaced, int wardsKilled, int firstBloodKill, int firstBloodAssist, int firstTowerKill, int firstTowerAssist, Rune keyStone, RuneExtraData keyStoneExtraData, Rune primarySub1, RuneExtraData primarySub1ExtraData, Rune primarySub2, RuneExtraData primarySub2ExtraData, Rune primarySub3, RuneExtraData primarySub3ExtraData, Rune secondarySub1, RuneExtraData secondarySub1ExtraData, Rune secondarySub2, RuneExtraData secondarySub2ExtraData, RuneStyle primaryStyle, RuneStyle secondaryStyle, RuneStat statDefense, RuneStat statFlex, RuneStat statOffense, String role, String lane, int baronKills, int bountyLevel, int champExperience, int championTransform, int consumablesPurchased, int damageDealtToBuildings, int dragonKills, boolean gameEndedInEarlySurrender, boolean gameEndedInSurrender, String individualPosition, int inhibitorTakedowns, int inhibitorsLost, int itemsPurchased, int nexusKills, int nexusLost, int nexusTakedowns, int objectivesStolen, int objectivesStolenAssists, String summonerId, int spell1Casts, int spell2Casts, int spell3Casts, int spell4Casts, int summonerSpell1Casts, int summonerSpell2Casts, boolean teamEarlySurrendered, int teamId, String teamPosition, int timePlayed, int totalDamageShieldedOnTeammates, int totalHealsOnTeammates, int totalTimeSpentDead, int turretTakedowns, int turretsLost, boolean won, PingStats pingStats, int detectorWardsPlaced, boolean eligibleForProgression, ChallengeStats challenges) {
+    public MatchParticipant(int participantId, Champion champion, SummonerSpell summonerSpell1, SummonerSpell summonerSpell2, Item item0, Item item1, Item item2, Item item3, Item item4, Item item5, Item item6, int kills, int deaths, int assists, int largestKillingSpree, int largestMultiKill, int killingSprees, int longestTimeSpentLiving, int doubleKills, int tripleKills, int quadraKills, int pentaKills, int unrealKills, int totalDamageDealt, int magicDamageDealt, int physicalDamageDealt, int trueDamageDealt, int largestCriticalStrike, int totalDamageDealtToChampions, int magicDamageDealtToChampions, int physicalDamageDealtToChampions, int trueDamageDealtToChampions, int totalHeal, int totalUnitsHealed, int damageSelfMitigated, int damageDealtToObjectives, int damageDealtToTurrets, int visionScore, int timeCCingOthers, int totalDamageTaken, int magicDamageTaken, int physicalDamageTaken, int trueDamageTaken, int goldEarned, int goldSpent, int turretKills, int inhibitorKills, int totalMinionsKilled, int neutralMinionsKilled, int totalTimeCCDealt, int champLevel, int visionWardsBoughtInGame, int sightWardsBoughtInGame, int wardsPlaced, int wardsKilled, int firstBloodKill, int firstBloodAssist, int firstTowerKill, int firstTowerAssist, RuneData keyStoneData, RuneData primarySub1Data, RuneData primarySub2Data, RuneData primarySub3Data, RuneData secondarySub1Data, RuneData secondarySub2Data, RuneStyle primaryStyle, RuneStyle secondaryStyle, RuneStat statDefense, RuneStat statFlex, RuneStat statOffense, String role, String lane, int baronKills, int bountyLevel, int champExperience, int championTransform, int consumablesPurchased, int damageDealtToBuildings, int dragonKills, boolean gameEndedInEarlySurrender, boolean gameEndedInSurrender, String individualPosition, int inhibitorTakedowns, int inhibitorsLost, int itemsPurchased, int nexusKills, int nexusLost, int nexusTakedowns, int objectivesStolen, int objectivesStolenAssists, String summonerId, int spell1Casts, int spell2Casts, int spell3Casts, int spell4Casts, int summonerSpell1Casts, int summonerSpell2Casts, boolean teamEarlySurrendered, int teamId, String teamPosition, int timePlayed, int totalDamageShieldedOnTeammates, int totalHealsOnTeammates, int totalTimeSpentDead, int turretTakedowns, int turretsLost, boolean won, PingStats pingStats, int detectorWardsPlaced, boolean eligibleForProgression, ChallengeStats challenges) {
         this.participantId = participantId;
         this.champion = champion;
         this.summonerSpell1 = summonerSpell1;
@@ -191,18 +184,12 @@ public class MatchParticipant {
         this.firstBloodAssist = firstBloodAssist;
         this.firstTowerKill = firstTowerKill;
         this.firstTowerAssist = firstTowerAssist;
-        this.keyStone = keyStone;
-        this.keyStoneExtraData = keyStoneExtraData;
-        this.primarySub1 = primarySub1;
-        this.primarySub1ExtraData = primarySub1ExtraData;
-        this.primarySub2 = primarySub2;
-        this.primarySub2ExtraData = primarySub2ExtraData;
-        this.primarySub3 = primarySub3;
-        this.primarySub3ExtraData = primarySub3ExtraData;
-        this.secondarySub1 = secondarySub1;
-        this.secondarySub1ExtraData = secondarySub1ExtraData;
-        this.secondarySub2 = secondarySub2;
-        this.secondarySub2ExtraData = secondarySub2ExtraData;
+        this.keyStoneData = keyStoneData;
+        this.primarySub1Data = primarySub1Data;
+        this.primarySub2Data = primarySub2Data;
+        this.primarySub3Data = primarySub3Data;
+        this.secondarySub1Data = secondarySub1Data;
+        this.secondarySub2Data = secondarySub2Data;
         this.primaryStyle = primaryStyle;
         this.secondaryStyle = secondaryStyle;
         this.statDefense = statDefense;
@@ -487,52 +474,28 @@ public class MatchParticipant {
         return this.firstTowerAssist;
     }
 
-    public Rune getKeyStone() {
-        return this.keyStone;
+    public RuneData getKeyStoneData() {
+        return this.keyStoneData;
     }
 
-    public RuneExtraData getKeyStoneExtraData() {
-        return this.keyStoneExtraData;
+    public RuneData getPrimarySub1Data() {
+        return this.primarySub1Data;
     }
 
-    public Rune getPrimarySub1() {
-        return this.primarySub1;
+    public RuneData getPrimarySub2Data() {
+        return this.primarySub2Data;
     }
 
-    public RuneExtraData getPrimarySub1ExtraData() {
-        return this.primarySub1ExtraData;
+    public RuneData getPrimarySub3Data() {
+        return this.primarySub3Data;
     }
 
-    public Rune getPrimarySub2() {
-        return this.primarySub2;
+    public RuneData getSecondarySub1Data() {
+        return this.secondarySub1Data;
     }
 
-    public RuneExtraData getPrimarySub2ExtraData() {
-        return this.primarySub2ExtraData;
-    }
-
-    public Rune getPrimarySub3() {
-        return this.primarySub3;
-    }
-
-    public RuneExtraData getPrimarySub3ExtraData() {
-        return this.primarySub3ExtraData;
-    }
-
-    public Rune getSecondarySub1() {
-        return this.secondarySub1;
-    }
-
-    public RuneExtraData getSecondarySub1ExtraData() {
-        return this.secondarySub1ExtraData;
-    }
-
-    public Rune getSecondarySub2() {
-        return this.secondarySub2;
-    }
-
-    public RuneExtraData getSecondarySub2ExtraData() {
-        return this.secondarySub2ExtraData;
+    public RuneData getSecondarySub2Data() {
+        return this.secondarySub2Data;
     }
 
     public RuneStyle getPrimaryStyle() {

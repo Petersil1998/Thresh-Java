@@ -1,13 +1,16 @@
 package net.petersil98.thresh.data;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import net.petersil98.stcommons.data.Sprite;
 import net.petersil98.thresh.collection.Items;
 import net.petersil98.thresh.data.champion.Champion;
+import net.petersil98.thresh.model.Deserializers;
 import net.petersil98.thresh.util.LoLLoader;
 
 import java.util.List;
 import java.util.Objects;
 
+@JsonDeserialize(using = Deserializers.ItemDeserializer.class)
 public class Item {
 
     private final int id;

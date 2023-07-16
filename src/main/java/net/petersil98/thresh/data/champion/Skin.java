@@ -1,5 +1,9 @@
 package net.petersil98.thresh.data.champion;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import net.petersil98.thresh.model.Deserializers;
+
+@JsonDeserialize(using = Deserializers.SkinDeserializer.class)
 public class Skin {
 
     private final int id;

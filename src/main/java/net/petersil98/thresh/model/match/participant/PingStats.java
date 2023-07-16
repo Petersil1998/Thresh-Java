@@ -1,5 +1,9 @@
 package net.petersil98.thresh.model.match.participant;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import net.petersil98.thresh.model.Deserializers;
+
+@JsonDeserialize(using = Deserializers.PingStatsDeserializer.class)
 public class PingStats {
     private final int allInPings;
     private final int assistMePings;
