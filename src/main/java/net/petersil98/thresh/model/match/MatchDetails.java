@@ -2,8 +2,8 @@ package net.petersil98.thresh.model.match;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import net.petersil98.core.constant.Platform;
-import net.petersil98.core.constant.Region;
+import net.petersil98.stcommons.constants.LeaguePlatform;
+import net.petersil98.stcommons.constants.LeagueRegion;
 import net.petersil98.thresh.data.Map;
 import net.petersil98.thresh.data.QueueType;
 import net.petersil98.thresh.http.LoLAPI;
@@ -29,13 +29,13 @@ public class MatchDetails {
     private final String gameVersion;
     private final Map map;
     private final List<MatchParticipant> participants;
-    private final Platform platform;
+    private final LeaguePlatform platform;
     private final QueueType queueType;
     private final List<Team> teams;
     private final String tournamentCode;
     private Timeline timeline;
 
-    public MatchDetails(long gameCreation, int gameDuration, long gameEndTimestamp, long gameId, String gameMode, String gameName, long gameStartTimestamp, String gameType, String gameVersion, Map map, List<MatchParticipant> participants, Platform platform, QueueType queueType, List<Team> teams, String tournamentCode) {
+    public MatchDetails(long gameCreation, int gameDuration, long gameEndTimestamp, long gameId, String gameMode, String gameName, long gameStartTimestamp, String gameType, String gameVersion, Map map, List<MatchParticipant> participants, LeaguePlatform platform, QueueType queueType, List<Team> teams, String tournamentCode) {
         this.gameCreation = gameCreation;
         this.gameDuration = gameDuration;
         this.gameEndTimestamp = gameEndTimestamp;
@@ -53,8 +53,14 @@ public class MatchDetails {
         this.tournamentCode = tournamentCode;
     }
 
-    public static MatchDetails getMatchDetails(String matchId, Region region) {
+    public static MatchDetails getMatchDetails(String matchId, LeagueRegion region) {
         return LoLAPI.requestLoLMatchEndpoint("matches/", matchId, region, MatchDetails.class);
+    }
+
+    public static List<MatchDetails> getMatchHistory(String puuid, LeagueRegion region, java.util.Map<String, String> filter) {
+        Util.validateFilter(filter);
+        List<String> matchIds = LoLAPI.requestLoLMatchEndpoint("matches/by-puuid/", puuid + "/ids", region, TypeFactory.defaultInstance().constructCollectionType(List.class, String.class), filter);
+        return matchIds.stream().map(matchId -> MatchDetails.getMatchDetails(matchId, region)).toList();
     }
 
     public long getGameCreation() {
@@ -101,7 +107,7 @@ public class MatchDetails {
         return participants;
     }
 
-    public Platform getPlatform() {
+    public LeaguePlatform getPlatform() {
         return platform;
     }
 
@@ -117,14 +123,8 @@ public class MatchDetails {
         return tournamentCode;
     }
 
-    public static List<MatchDetails> getMatchHistory(String puuid, Region region, java.util.Map<String, String> filter) {
-        Util.validateFilter(filter);
-        List<String> matchIds = LoLAPI.requestLoLMatchEndpoint("matches/by-puuid/", puuid + "/ids", region, TypeFactory.defaultInstance().constructCollectionType(List.class, String.class), filter);
-        return matchIds.stream().map(matchId -> MatchDetails.getMatchDetails(matchId, region)).toList();
-    }
-
     public Timeline getTimeline() {
-        if(this.timeline == null) this.timeline = Timeline.getTimelinesForMatch(this.platform.toString().toUpperCase()+ "_" + this.gameId, Region.byPlatform(this.platform));
+        if(this.timeline == null) this.timeline = Timeline.getTimelinesForMatch(this.platform.toString().toUpperCase()+ "_" + this.gameId, LeagueRegion.byPlatform(this.platform));
         return this.timeline;
     }
 

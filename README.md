@@ -38,12 +38,12 @@ Now Thresh is ready and set up!
         public static void main(String[] args) {
             // Setup code...
             
-            Summoner faker = Summoner.getSummonerByName("Faker", Platform.KR);
+            Summoner faker = Summoner.getSummonerByName("Faker", LeaguePlatform.KR);
             int summonerLevel = faker.getSummonerLevel();
             // Get the URL for the profile Icon
             String profileIconURL = Util.getProfileIconURL(faker.getProfileIcon());
             // Get Account
-            Account account = Account.getAccountByPuuid(faker.getPuuid(), Region.ASIA);
+            Account account = Account.getAccountByPuuid(faker.getPuuid(), LeagueRegion.ASIA);
             // Get the Tag (e.g. Faker#KR1)
             String tag = account.toString();
         }
@@ -57,8 +57,8 @@ Now Thresh is ready and set up!
         public static void main(String[] args) {
             // Setup code...
            
-            Summoner faker = Summoner.getSummonerByName("Faker", Platform.KR);
-            ChampionMasteries masteries = ChampionMasteries.getChampionMasteriesOfSummoner(faker.getId(), Platform.KR);
+            Summoner faker = Summoner.getSummonerByName("Faker", LeaguePlatform.KR);
+            ChampionMasteries masteries = ChampionMasteries.getChampionMasteriesOfSummoner(faker.getId(), LeaguePlatform.KR);
             // Get Mastery Score
             int masteryScore = masteries.getTotalMasteryPoints();
             // Get Mastery Points on all Champions Combined
@@ -84,24 +84,24 @@ Now Thresh is ready and set up!
         public static void main(String[] args) {
             // Setup code...
             
-            Summoner faker = Summoner.getSummonerByName("Faker", Platform.KR);
+            Summoner faker = Summoner.getSummonerByName("Faker", LeaguePlatform.KR);
             // Get Solo/Duo and Flex Rank
-            LoLRanked ranked = LoLRanked.getLoLRanksOfSummoner(faker.getId(), Platform.KR);
+            LoLRanked ranked = LoLRanked.getLoLRanksOfSummoner(faker.getId(), LeaguePlatform.KR);
             RankEntry soloDuo = ranked.getRankSoloDuo();
             int lp = soloDuo.getLeaguePoints();
             RankEntry flex = ranked.getRankFlex5v5();
   
             // Get Challenger Solo Queue Players
-            League challengers = LoLRanked.getChallengerLeague(RankedQueue.SOLO_DUO, Platform.EUW);
+            League challengers = LoLRanked.getChallengerLeague(RankedQueue.SOLO_DUO, LeaguePlatform.EUW);
             for(LeagueEntry leagueEntry: challengers.getEntries()) {
                 // Get all players and their LP
-                Summoner player = Summoner.getSummonerByID(leagueEntry.getSummonerId(), Platform.EUW);
+                Summoner player = Summoner.getSummonerByID(leagueEntry.getSummonerId(), LeaguePlatform.EUW);
                 int playerLp = leagueEntry.getLeaguePoints();
             }
   
             // Get a list of Gold 1 Flex Players
-            List<RankEntry> firstPage = LoLRanked.getRankEntries(RankedDivision.I, RankedTier.GOLD, RankedQueue.FLEX, Platform.NA);
-            List<RankEntry> secondPage = LoLRanked.getRankEntries(RankedDivision.I, RankedTier.GOLD, RankedQueue.FLEX, Platform.NA, 2);
+            List<RankEntry> firstPage = LoLRanked.getRankEntries(RankedDivision.I, RankedTier.GOLD, RankedQueue.FLEX, LeaguePlatform.NA);
+            List<RankEntry> secondPage = LoLRanked.getRankEntries(RankedDivision.I, RankedTier.GOLD, RankedQueue.FLEX, LeaguePlatform.NA, 2);
         }
     } 
     ```
@@ -113,9 +113,9 @@ Now Thresh is ready and set up!
         public static void main(String[] args) {
             // Setup code...
             
-            Summoner faker = Summoner.getSummonerByName("Faker", Platform.NA);
+            Summoner faker = Summoner.getSummonerByName("Faker", LeaguePlatform.NA);
             // Get Active Game of a given Summoner
-            ActiveGame game = ActiveGame.ofSummoner(faker.getId(), Platform.NA);
+            ActiveGame game = ActiveGame.ofSummoner(faker.getId(), LeaguePlatform.NA);
             Map map = game.getMap();
             String gameMode = game.getGameMode();
             int duration = game.getDuration();
@@ -134,9 +134,9 @@ Now Thresh is ready and set up!
         public static void main(String[] args) {
             // Setup code...
             
-            Summoner faker = Summoner.getSummonerByName("Faker", Platform.NA);
+            Summoner faker = Summoner.getSummonerByName("Faker", LeaguePlatform.NA);
             // Get the Player's Match History. The Seconds Parameter is a Filter.
-            List<MatchDetails> matchHistory = MatchDetails.getMatchHistory(faker.getId(), Region.ASIA, Map.of());
+            List<MatchDetails> matchHistory = MatchDetails.getMatchHistory(faker.getId(), LeagueRegion.ASIA, Map.of());
             MatchDetails latestGame = matchHistory.get(0);
             int duration = latestGame.getGameDuration();
             // Get Team-based Info like bans, barons killed, turrets killed, etc.

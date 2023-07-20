@@ -1,7 +1,7 @@
 package net.petersil98.thresh.model;
 
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import net.petersil98.core.constant.Platform;
+import net.petersil98.stcommons.constants.LeaguePlatform;
 import net.petersil98.stcommons.constants.RankedDivision;
 import net.petersil98.stcommons.constants.RankedQueue;
 import net.petersil98.stcommons.constants.RankedTier;
@@ -14,39 +14,39 @@ import java.util.Map;
 
 public class LoLRanked {
     private final String summonerId;
-    private final Platform platform;
+    private final LeaguePlatform platform;
     private RankEntry rankSoloDuo, rankFlex5v5;
 
-    private LoLRanked(String summonerId, Platform platform) {
+    private LoLRanked(String summonerId, LeaguePlatform platform) {
         this.summonerId = summonerId;
         this.platform = platform;
     }
 
-    public static LoLRanked getLoLRanksOfSummoner(String summonerId, Platform platform) {
+    public static LoLRanked getLoLRanksOfSummoner(String summonerId, LeaguePlatform platform) {
         return new LoLRanked(summonerId, platform);
     }
 
-    public static League getLeagueById(String id, Platform platform) {
+    public static League getLeagueById(String id, LeaguePlatform platform) {
         return LoLAPI.requestLoLLeagueEndpoint("leagues/", id, platform, League.class);
     }
 
-    public static League getMasterLeague(RankedQueue queue, Platform platform) {
+    public static League getMasterLeague(RankedQueue queue, LeaguePlatform platform) {
         return LoLAPI.requestLoLLeagueEndpoint("masterleagues/by-queue/", queue.getJsonPropertyValue(), platform, League.class);
     }
 
-    public static League getGrandmasterLeague(RankedQueue queue, Platform platform) {
+    public static League getGrandmasterLeague(RankedQueue queue, LeaguePlatform platform) {
         return LoLAPI.requestLoLLeagueEndpoint("grandmasterleagues/by-queue/", queue.getJsonPropertyValue(), platform, League.class);
     }
 
-    public static League getChallengerLeague(RankedQueue queue, Platform platform) {
+    public static League getChallengerLeague(RankedQueue queue, LeaguePlatform platform) {
         return LoLAPI.requestLoLLeagueEndpoint("challengerleagues/by-queue/", queue.getJsonPropertyValue(), platform, League.class);
     }
 
-    public static List<RankEntry> getRankEntries(RankedDivision division, RankedTier tier, RankedQueue queue, Platform platform) {
+    public static List<RankEntry> getRankEntries(RankedDivision division, RankedTier tier, RankedQueue queue, LeaguePlatform platform) {
         return getRankEntries(division, tier, queue, platform, 1);
     }
 
-    public static List<RankEntry> getRankEntries(RankedDivision division, RankedTier tier, RankedQueue queue, Platform platform, int pageNumber) {
+    public static List<RankEntry> getRankEntries(RankedDivision division, RankedTier tier, RankedQueue queue, LeaguePlatform platform, int pageNumber) {
         return LoLAPI.requestLoLLeagueEndpoint("entries/", String.format("%s/%s/%s", queue.getJsonPropertyValue(), tier.name(), division.name()),
                 platform, TypeFactory.defaultInstance().constructCollectionType(List.class, RankEntry.class), Map.of("page", String.valueOf(pageNumber)));
     }

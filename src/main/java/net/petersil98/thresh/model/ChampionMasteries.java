@@ -2,7 +2,7 @@ package net.petersil98.thresh.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import net.petersil98.core.constant.Platform;
+import net.petersil98.stcommons.constants.LeaguePlatform;
 import net.petersil98.thresh.data.champion.Champion;
 import net.petersil98.thresh.http.LoLAPI;
 
@@ -12,16 +12,16 @@ import java.util.Objects;
 public class ChampionMasteries {
 
     private final String summonerId;
-    private final Platform platform;
+    private final LeaguePlatform platform;
     private List<Mastery> masteries;
     private int totalMasteryPoints = -1;
 
-    private ChampionMasteries(String summonerId, Platform platform) {
+    private ChampionMasteries(String summonerId, LeaguePlatform platform) {
         this.summonerId = summonerId;
         this.platform = platform;
     }
 
-    public static ChampionMasteries getChampionMasteriesOfSummoner(String summonerId, Platform platform) {
+    public static ChampionMasteries getChampionMasteriesOfSummoner(String summonerId, LeaguePlatform platform) {
         return new ChampionMasteries(summonerId, platform);
     }
 

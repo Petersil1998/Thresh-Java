@@ -2,7 +2,7 @@ package net.petersil98.thresh.model;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.*;
-import net.petersil98.core.constant.Platform;
+import net.petersil98.stcommons.constants.LeaguePlatform;
 import net.petersil98.stcommons.data.Sprite;
 import net.petersil98.thresh.Thresh;
 import net.petersil98.thresh.collection.*;
@@ -93,7 +93,7 @@ public class Deserializers {
                     participants.stream().filter(participant -> participant.getTeamId() == 100).toList(),
                     participants.stream().filter(participant -> participant.getTeamId() == 200).toList(),
                     participants.size() / 2, bans, root.get("observers").get("encryptionKey").asText(),
-                    Platform.getPlatform(root.get("platformId").asText()), root.get("gameStartTime").asInt(),
+                    LeaguePlatform.getPlatform(root.get("platformId").asText()), root.get("gameStartTime").asInt(),
                     root.get("gameLength").asInt());
         }
     }
@@ -116,7 +116,8 @@ public class Deserializers {
             List<RuneData> secondaryRunes = MAPPER.readerForListOf(RuneData.class).readValue(secondaryPerks.get("selections"));
 
             PingStats pingStats = MAPPER.readerFor(PingStats.class).readValue(root);
-            ChallengeStats challengeStats = MAPPER.readerFor(ChallengeStats.class).readValue(root.get("challenges"));
+            ChallengeStats challengeStats = null;
+            if (root.has("challenges"))  challengeStats = MAPPER.readerFor(ChallengeStats.class).readValue(root.get("challenges"));
 
             return new MatchParticipant(root.get("participantId").asInt(), champion, SummonerSpells.getSummonerSpell(root.get("summoner1Id").asInt()),
                     SummonerSpells.getSummonerSpell(root.get("summoner2Id").asInt()), Items.getItem(root.get("item0").asInt()),
@@ -347,7 +348,7 @@ public class Deserializers {
                     details.get("gameEndTimestamp").asLong(), details.get("gameId").asLong(), details.get("gameMode").asText(),
                     details.get("gameName").asText(), details.get("gameStartTimestamp").asLong(), details.get("gameType").asText(),
                     details.get("gameVersion").asText(), Maps.getMap(details.get("mapId").asInt()), participants,
-                    Platform.getPlatform(details.get("platformId").asText()), QueueTypes.getQueueType(details.get("queueId").asInt()),
+                    LeaguePlatform.getPlatform(details.get("platformId").asText()), QueueTypes.getQueueType(details.get("queueId").asInt()),
                     teams, details.get("tournamentCode").asText());
         }
     }

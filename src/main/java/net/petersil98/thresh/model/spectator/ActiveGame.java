@@ -1,7 +1,7 @@
 package net.petersil98.thresh.model.spectator;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import net.petersil98.core.constant.Platform;
+import net.petersil98.stcommons.constants.LeaguePlatform;
 import net.petersil98.thresh.constants.LoLConstants;
 import net.petersil98.thresh.data.Map;
 import net.petersil98.thresh.data.QueueType;
@@ -24,11 +24,11 @@ public class ActiveGame {
     private final int teamsize;
     private final List<Ban> bans;
     private final String spectatorKey;
-    private final Platform platform;
+    private final LeaguePlatform platform;
     private final int startTime;
     private final int duration;
 
-    public ActiveGame(long gameId, Map map, String gameMode, String gameType, QueueType queueType, List<Participant> blueSideTeam, List<Participant> redSideTeam, int teamsize, List<Ban> bans, String spectatorKey, Platform platform, int startTime, int duration) {
+    public ActiveGame(long gameId, Map map, String gameMode, String gameType, QueueType queueType, List<Participant> blueSideTeam, List<Participant> redSideTeam, int teamsize, List<Ban> bans, String spectatorKey, LeaguePlatform platform, int startTime, int duration) {
         this.gameId = gameId;
         this.map = map;
         this.gameMode = gameMode;
@@ -44,7 +44,7 @@ public class ActiveGame {
         this.duration = duration;
     }
 
-    public static ActiveGame ofSummoner(String summonerID, Platform platform) {
+    public static ActiveGame ofSummoner(String summonerID, LeaguePlatform platform) {
         return LoLAPI.requestLoLSpectatorEndpoint("active-games/by-summoner/", summonerID, platform, ActiveGame.class);
     }
 
@@ -88,7 +88,7 @@ public class ActiveGame {
         return this.spectatorKey;
     }
 
-    public Platform getPlatform() {
+    public LeaguePlatform getPlatform() {
         return this.platform;
     }
 

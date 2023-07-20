@@ -3,9 +3,9 @@ package net.petersil98.thresh.http;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeBase;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import net.petersil98.core.constant.Platform;
-import net.petersil98.core.constant.Region;
 import net.petersil98.core.util.settings.Settings;
+import net.petersil98.stcommons.constants.LeaguePlatform;
+import net.petersil98.stcommons.constants.LeagueRegion;
 import net.petersil98.stcommons.http.LeagueAPI;
 
 import java.util.HashMap;
@@ -27,7 +27,7 @@ public class LoLAPI extends LeagueAPI {
      * @param requiredClass Class to which the response should get mapped to
      * @return An object of class <b>T</b> if casting is successful, {@code null} otherwise
      */
-    public static <T> T requestLoLChampionMasteryEndpoint(String method, String args, Platform platform, Class<T> requiredClass) {
+    public static <T> T requestLoLChampionMasteryEndpoint(String method, String args, LeaguePlatform platform, Class<T> requiredClass) {
         return requestLoLChampionMasteryEndpoint(method, args, platform, requiredClass, new HashMap<>());
     }
 
@@ -44,7 +44,7 @@ public class LoLAPI extends LeagueAPI {
      * @param requiredClass Class to which the response should get mapped to
      * @return An object of Type <b>{@code requiredClass}</b> if casting is successful, {@code null} otherwise
      */
-    public static <T> T requestLoLChampionMasteryEndpoint(String method, String args, Platform platform, TypeBase requiredClass) {
+    public static <T> T requestLoLChampionMasteryEndpoint(String method, String args, LeaguePlatform platform, TypeBase requiredClass) {
         return requestLoLChampionMasteryEndpoint(method, args, platform, requiredClass, new HashMap<>());
     }
 
@@ -60,7 +60,7 @@ public class LoLAPI extends LeagueAPI {
      *               even if they represent an integer
      * @return An object of class <b>T</b> if casting is successful, {@code null} otherwise
      */
-    public static <T> T requestLoLChampionMasteryEndpoint(String method, String args, Platform platform, Class<T> requiredClass, Map<String, String> filter) {
+    public static <T> T requestLoLChampionMasteryEndpoint(String method, String args, LeaguePlatform platform, Class<T> requiredClass, Map<String, String> filter) {
         return requestLoLChampionMasteryEndpoint(method, args, platform, TypeFactory.defaultInstance().constructType(requiredClass), filter);
     }
 
@@ -77,10 +77,10 @@ public class LoLAPI extends LeagueAPI {
      *               even if they represent an integer
      * @return An object of Type <b>{@code requiredClass}</b> if casting is successful, {@code null} otherwise
      */
-    public static <T> T requestLoLChampionMasteryEndpoint(String method, String args, Platform platform, JavaType requiredClass, Map<String, String> filter) {
+    public static <T> T requestLoLChampionMasteryEndpoint(String method, String args, LeaguePlatform platform, JavaType requiredClass, Map<String, String> filter) {
         return handleCacheAndRateLimiter(
                 constructUrl(LOL_CHAMPION_MASTERY_V4 + method + args, AppType.LOL, platform),
-                LOL_CHAMPION_MASTERY_V4 + method, Region.byPlatform(platform), requiredClass, filter);
+                LOL_CHAMPION_MASTERY_V4 + method, LeagueRegion.byPlatform(platform), requiredClass, filter);
     }
 
     /**
@@ -93,7 +93,7 @@ public class LoLAPI extends LeagueAPI {
      * @param requiredClass Class to which the response should get mapped to
      * @return An object of class <b>T</b> if casting is successful, {@code null} otherwise
      */
-    public static <T> T requestLoLSpectatorEndpoint(String method, String args, Platform platform, Class<T> requiredClass) {
+    public static <T> T requestLoLSpectatorEndpoint(String method, String args, LeaguePlatform platform, Class<T> requiredClass) {
         return requestLoLSpectatorEndpoint(method, args, platform, requiredClass, new HashMap<>());
     }
 
@@ -110,7 +110,7 @@ public class LoLAPI extends LeagueAPI {
      * @param requiredClass Class to which the response should get mapped to
      * @return An object of Type <b>{@code requiredClass}</b> if casting is successful, {@code null} otherwise
      */
-    public static <T> T requestLoLSpectatorEndpoint(String method, String args, Platform platform, TypeBase requiredClass) {
+    public static <T> T requestLoLSpectatorEndpoint(String method, String args, LeaguePlatform platform, TypeBase requiredClass) {
         return requestLoLSpectatorEndpoint(method, args, platform, requiredClass, new HashMap<>());
     }
 
@@ -126,7 +126,7 @@ public class LoLAPI extends LeagueAPI {
      *               even if they represent an integer
      * @return An object of class <b>T</b> if casting is successful, {@code null} otherwise
      */
-    public static <T> T requestLoLSpectatorEndpoint(String method, String args, Platform platform, Class<T> requiredClass, Map<String, String> filter) {
+    public static <T> T requestLoLSpectatorEndpoint(String method, String args, LeaguePlatform platform, Class<T> requiredClass, Map<String, String> filter) {
         return requestLoLSpectatorEndpoint(method, args, platform, TypeFactory.defaultInstance().constructType(requiredClass), filter);
     }
 
@@ -143,10 +143,10 @@ public class LoLAPI extends LeagueAPI {
      *               even if they represent an integer
      * @return An object of Type <b>{@code requiredClass}</b> if casting is successful, {@code null} otherwise
      */
-    public static <T> T requestLoLSpectatorEndpoint(String method, String args, Platform platform, JavaType requiredClass, Map<String, String> filter) {
+    public static <T> T requestLoLSpectatorEndpoint(String method, String args, LeaguePlatform platform, JavaType requiredClass, Map<String, String> filter) {
         return handleCacheAndRateLimiter(
                 constructUrl(LOL_SPECTATOR_V4 + method + args, AppType.LOL, platform),
-                LOL_SPECTATOR_V4 + method, Region.byPlatform(platform), requiredClass, filter);
+                LOL_SPECTATOR_V4 + method, LeagueRegion.byPlatform(platform), requiredClass, filter);
     }
 
     /**
@@ -159,7 +159,7 @@ public class LoLAPI extends LeagueAPI {
      * @param requiredClass Class to which the response should get mapped to
      * @return An object of class <b>T</b> if casting is successful, {@code null} otherwise
      */
-    public static <T> T requestLoLMatchEndpoint(String method, String args, Region region, Class<T> requiredClass) {
+    public static <T> T requestLoLMatchEndpoint(String method, String args, LeagueRegion region, Class<T> requiredClass) {
         return requestLoLMatchEndpoint(method, args, region, requiredClass, new HashMap<>());
     }
 
@@ -176,7 +176,7 @@ public class LoLAPI extends LeagueAPI {
      * @param requiredClass Class to which the response should get mapped to
      * @return An object of Type <b>{@code requiredClass}</b> if casting is successful, {@code null} otherwise
      */
-    public static <T> T requestLoLMatchEndpoint(String method, String args, Region region, TypeBase requiredClass) {
+    public static <T> T requestLoLMatchEndpoint(String method, String args, LeagueRegion region, TypeBase requiredClass) {
         return requestLoLMatchEndpoint(method, args, region, requiredClass, new HashMap<>());
     }
 
@@ -192,7 +192,7 @@ public class LoLAPI extends LeagueAPI {
      *               even if they represent an integer
      * @return An object of class <b>T</b> if casting is successful, {@code null} otherwise
      */
-    public static <T> T requestLoLMatchEndpoint(String method, String args, Region region, Class<T> requiredClass, Map<String, String> filter) {
+    public static <T> T requestLoLMatchEndpoint(String method, String args, LeagueRegion region, Class<T> requiredClass, Map<String, String> filter) {
         return requestLoLMatchEndpoint(method, args, region, TypeFactory.defaultInstance().constructType(requiredClass), filter);
     }
 
@@ -209,7 +209,7 @@ public class LoLAPI extends LeagueAPI {
      *               even if they represent an integer
      * @return An object of Type <b>{@code requiredClass}</b> if casting is successful, {@code null} otherwise
      */
-    public static <T> T requestLoLMatchEndpoint(String method, String args, Region region, JavaType requiredClass, Map<String, String> filter) {
+    public static <T> T requestLoLMatchEndpoint(String method, String args, LeagueRegion region, JavaType requiredClass, Map<String, String> filter) {
         return handleCacheAndRateLimiter(
                 constructUrl(LOL_MATCH_V5 + method + args, AppType.LOL, region),
                 LOL_MATCH_V5 + method, region, requiredClass, filter);

@@ -1,7 +1,7 @@
 package net.petersil98.thresh.model.match.timeline;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import net.petersil98.core.constant.Region;
+import net.petersil98.stcommons.constants.LeagueRegion;
 import net.petersil98.thresh.http.LoLAPI;
 import net.petersil98.thresh.model.Deserializers;
 
@@ -22,7 +22,7 @@ public class Timeline {
         this.participants = participants;
     }
 
-    public static Timeline getTimelinesForMatch(String matchId, Region region) {
+    public static Timeline getTimelinesForMatch(String matchId, LeagueRegion region) {
         return LoLAPI.requestLoLMatchEndpoint("matches/", matchId + "/timeline", region, Timeline.class);
     }
 
