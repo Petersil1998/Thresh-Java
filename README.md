@@ -1,7 +1,12 @@
 # Thresh
 
 Thresh is an Object-Oriented Java Library, which takes over the Communication with the League of Legends API. It supports In-Memory caching and uses a (blocking) Rate Limiter. It makes retrieving Summoner Data, Match History,
-etc. much easier. For Teamfight Tactics take a look at [Spatula](https://github.com/Petersil1998/Spatula)
+etc. much easier.
+
+Other Projects:
+- [Spatula](https://github.com/Petersil1998/Spatula) for Teamfight Tactics
+- [Scuttlegeist](https://github.com/Petersil1998/Scuttlegeist) for Legends of Runeterra
+- [Fade](https://github.com/Petersil1998/Fade) for Valorant
 
 ## Usage
 
@@ -127,7 +132,7 @@ Now Thresh is ready and set up!
     } 
     ```
 
-- **MatchHistory**
+- **Match History**
 
     ```JAVA
     public class Example {
@@ -163,7 +168,7 @@ Now Thresh is ready and set up!
 
 - **Collections**
 
-    The package [collection](https://github.com/Petersil1998/Thresh-Java/blob/master/src/main/java/net/petersil98/thresh/collection/) contains Classes, which like Collections of static Data including:
+    The package [collection](https://github.com/Petersil1998/Thresh-Java/blob/master/src/main/java/net/petersil98/thresh/collection/) contains a bunch of Collections for static Data including:
   
     - Challenges
     - Champions
