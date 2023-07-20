@@ -86,7 +86,7 @@ Now Thresh is ready and set up!
             
             Summoner faker = Summoner.getSummonerByName("Faker", LeaguePlatform.KR);
             // Get Solo/Duo and Flex Rank
-            LoLRanked ranked = LoLRanked.getLoLRanksOfSummoner(faker.getId(), LeaguePlatform.KR);
+            PlayerRanks ranked = LoLRanked.getLoLRanksOfSummoner(faker.getId(), LeaguePlatform.KR);
             RankEntry soloDuo = ranked.getRankSoloDuo();
             int lp = soloDuo.getLeaguePoints();
             RankEntry flex = ranked.getRankFlex5v5();

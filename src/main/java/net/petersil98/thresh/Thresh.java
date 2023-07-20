@@ -11,6 +11,7 @@ import net.petersil98.stcommons.model.league.RankEntry;
 import net.petersil98.thresh.collection.*;
 import net.petersil98.thresh.model.ChampionMasteries;
 import net.petersil98.thresh.model.LoLRanked;
+import net.petersil98.thresh.model.PlayerRanks;
 import net.petersil98.thresh.model.match.MatchDetails;
 import net.petersil98.thresh.model.spectator.ActiveGame;
 import net.petersil98.thresh.util.LoLLoader;
@@ -39,7 +40,7 @@ public class Thresh {
         System.out.println(masteries.getTotalMasteryPoints());
         System.out.println(masteries.getTotalMasteryPointsCombined());
         System.out.println(masteries.getChampionMasteries());
-        LoLRanked ranked = LoLRanked.getLoLRanksOfSummoner(me.getId(), LeaguePlatform.EUW);
+        PlayerRanks ranked = LoLRanked.getLoLRanksOfSummoner(me.getId(), LeaguePlatform.EUW);
         System.out.println(ranked.getRankFlex5v5());
         System.out.println(ranked.getRankSoloDuo());
         League league = LoLRanked.getLeagueById(ranked.getRankSoloDuo().getLeagueId(), LeaguePlatform.EUW);
