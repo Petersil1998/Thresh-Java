@@ -215,7 +215,7 @@ Now Thresh is ready and set up!
 
 - **Collections**
 
-    The package [collection](https://github.com/Petersil1998/Thresh-Java/blob/master/src/main/java/net/petersil98/thresh/collection/) contains a bunch of Collections for static Data including:
+    The package [collection](https://github.com/Petersil1998/Thresh-Java/blob/main/src/main/java/net/petersil98/thresh/collection/) contains a bunch of Collections for static Data including:
   
     - Challenges
     - Champions
