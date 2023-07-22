@@ -10,6 +10,53 @@ Other Projects:
 
 ## Usage
 
+Thresh can be included like this using **Gradle**:
+
+```groovy
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+dependencies {
+  ...
+  implementation 'com.github.Petersil1998:Core:v1.3'
+  implementation 'com.github.Petersil1998:STCommons:v1.3'
+  implementation 'com.github.Petersil1998:Thresh-Java:v1.2'
+}
+```
+
+or using **Maven**:
+
+```XML
+<repositories>
+  <repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+  </repository>
+</repositories>
+
+<dependency>
+  <groupId>com.github.Petersil1998</groupId>
+  <artifactId>Core</artifactId>
+  <version>v1.3</version>
+</dependency>
+<dependency>
+  <groupId>com.github.Petersil1998</groupId>
+  <artifactId>STCommons</artifactId>
+  <version>v1.3</version>
+  </dependency>
+<dependency>
+  <groupId>com.github.Petersil1998</groupId>
+  <artifactId>Thresh-Java</artifactId>
+  <version>v1.2</version>
+</dependency>
+```
+
+## Setup
+
 In Order for Thresh to work properly there are a few things you need to set up
 at the beginning of your application.
 
