@@ -3,6 +3,8 @@ package net.petersil98.thresh.data.champion;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import net.petersil98.thresh.model.Deserializers;
 
+import java.util.Objects;
+
 @JsonDeserialize(using = Deserializers.SkinDeserializer.class)
 public class Skin {
 
@@ -37,5 +39,18 @@ public class Skin {
     @Override
     public String toString() {
         return this.name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Skin skin = (Skin) o;
+        return id == skin.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

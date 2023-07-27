@@ -1,42 +1,50 @@
 package net.petersil98.thresh.data;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Objects;
 
 public class QueueType {
 
-    @JsonProperty("queueId")
     private int id;
-    private String map;
+    private String name;
+    private String shortName;
     private String description;
-    private String notes;
-
-    public QueueType(int id, String map, String description, String notes) {
-        this.id = id;
-        this.map = map;
-        this.description = description;
-        this.notes = notes;
-    }
-
-    public QueueType() {}
+    private String detailedDescription;
 
     public int getId() {
         return id;
     }
 
-    public String getMap() {
-        return map;
+    public String getName() {
+        return name;
+    }
+
+    public String getShortName() {
+        return shortName;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public String getNotes() {
-        return notes;
+    public String getDetailedDescription() {
+        return detailedDescription;
     }
 
     @Override
     public String toString() {
-        return this.description;
+        return this.name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        QueueType queueType = (QueueType) o;
+        return id == queueType.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

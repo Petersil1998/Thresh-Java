@@ -9,11 +9,7 @@ import net.petersil98.core.util.settings.Settings;
 import net.petersil98.stcommons.constants.STConstants;
 import net.petersil98.thresh.Thresh;
 import net.petersil98.thresh.collection.*;
-import net.petersil98.thresh.constants.LoLConstants;
-import net.petersil98.thresh.data.Challenge;
-import net.petersil98.thresh.data.Item;
-import net.petersil98.thresh.data.QueueType;
-import net.petersil98.thresh.data.SummonerSpell;
+import net.petersil98.thresh.data.*;
 import net.petersil98.thresh.data.champion.Champion;
 import net.petersil98.thresh.data.rune.Rune;
 import net.petersil98.thresh.data.rune.RuneStat;
@@ -53,6 +49,7 @@ public class LoLLoader extends Loader {
         loadItems();
         loadSummonerSpells();
         loadChallenges();
+        loadArenaAugments();
     }
 
     @Override
@@ -160,9 +157,15 @@ public class LoLLoader extends Loader {
     }
 
     private void loadQueueTypes() {
-        try(InputStream in = new URI(String.format("%squeues.json", LoLConstants.STATIC_DATA_BASE_PATH)).toURL().openStream()) {
-            List<QueueType> queueTypes = MAPPER.readerForListOf(QueueType.class).readValue(in);
-            setFieldInCollection(QueueTypes.class, queueTypes.stream().collect(Collectors.toMap(QueueType::getId, queueType -> queueType)));
+        try(InputStream in = new URI("https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/queues.json").toURL().openStream()) {
+            JsonNode root = MAPPER.readTree(in);
+            Map<Integer, QueueType> queueTypes = new HashMap<>();
+            root.properties().forEach(entry -> ((ObjectNode)entry.getValue()).put("id", entry.getKey()));
+            for(JsonNode node: root) {
+                QueueType queueType = MAPPER.readerFor(QueueType.class).readValue(node);
+                queueTypes.put(queueType.getId(), queueType);
+            }
+            setFieldInCollection(QueueTypes.class, queueTypes);
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
@@ -213,6 +216,15 @@ public class LoLLoader extends Loader {
         try(InputStream in = new URI(String.format("%scdn/%s/data/%s/challenges.json", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openStream()) {
             List<Challenge> challenges = MAPPER.readerForListOf(Challenge.class).readValue(in);
             setFieldInCollection(Challenges.class, challenges.stream().collect(Collectors.toMap(Challenge::getId, challenge -> challenge)));
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadArenaAugments() {
+        try(InputStream in = new URI(String.format("https://raw.communitydragon.org/latest/cdragon/arena/%s.json", Settings.getLanguage().toString().toLowerCase())).toURL().openStream()) {
+            List<ArenaAugment> arenaAugments = MAPPER.readerForListOf(ArenaAugment.class).readValue(MAPPER.readTree(in).get("augments"));
+            setFieldInCollection(ArenaAugments.class, arenaAugments.stream().collect(Collectors.toMap(ArenaAugment::getId, augment -> augment)));
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }

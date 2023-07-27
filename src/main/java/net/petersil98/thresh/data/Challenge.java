@@ -4,6 +4,7 @@ import net.petersil98.stcommons.constants.RankedTier;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Challenge {
 
@@ -92,5 +93,18 @@ public class Challenge {
     @Override
     public String toString() {
         return this.name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Challenge challenge = (Challenge) o;
+        return id == challenge.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

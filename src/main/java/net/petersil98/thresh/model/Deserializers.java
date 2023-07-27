@@ -156,7 +156,14 @@ public class Deserializers {
                     root.get("timePlayed").asInt(), root.get("totalDamageShieldedOnTeammates").asInt(), root.get("totalHealsOnTeammates").asInt(),
                     root.get("totalTimeSpentDead").asInt(), root.get("turretTakedowns").asInt(), root.get("turretsLost").asInt(),
                     root.get("win").asBoolean(), pingStats, root.get("detectorWardsPlaced").asInt(),
-                    root.get("eligibleForProgression").asBoolean(false), challengeStats);
+                    root.get("eligibleForProgression").asBoolean(false), challengeStats,
+                    root.has("placement") ? root.get("placement").asInt() : -1,
+                    root.has("playerAugment1") ? ArenaAugments.getArenaAugment(root.get("playerAugment1").asInt()) : null,
+                    root.has("playerAugment2") ? ArenaAugments.getArenaAugment(root.get("playerAugment2").asInt()) : null,
+                    root.has("playerAugment3") ? ArenaAugments.getArenaAugment(root.get("playerAugment3").asInt()) : null,
+                    root.has("playerAugment4") ? ArenaAugments.getArenaAugment(root.get("playerAugment4").asInt()) : null,
+                    root.has("playerSubteamId") ? root.get("playerSubteamId").asInt() : -1,
+                    root.has("subteamPlacement") ? root.get("subteamPlacement").asInt() : -1);
         }
     }
 
@@ -363,7 +370,7 @@ public class Deserializers {
             JsonNode objectives = root.get("objectives");
 
             Map<Integer, Champion> bans = StreamSupport.stream(root.get("bans").spliterator(), false)
-                    .collect(Collectors.toMap(node -> node.get("pickTurn").asInt(), node -> Champions.getChampion(node.get("championId").asInt())));
+                    .collect(HashMap::new, (map, node) -> map.put(node.get("pickTurn").asInt(), Champions.getChampion(node.get("championId").asInt())), HashMap::putAll);
             return new Team(root.get("teamId").asInt(), root.get("win").asBoolean(), reader.readValue(objectives.get("baron")),
                     reader.readValue(objectives.get("champion")), reader.readValue(objectives.get("dragon")),
                     reader.readValue(objectives.get("inhibitor")), reader.readValue(objectives.get("riftHerald")),

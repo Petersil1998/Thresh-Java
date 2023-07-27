@@ -1,6 +1,7 @@
 package net.petersil98.thresh.model.match.participant;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import net.petersil98.thresh.data.ArenaAugment;
 import net.petersil98.thresh.data.Item;
 import net.petersil98.thresh.data.SummonerSpell;
 import net.petersil98.thresh.data.champion.Champion;
@@ -124,7 +125,16 @@ public class MatchParticipant {
     private final boolean eligibleForProgression;
     private final ChallengeStats challenges;
 
-    public MatchParticipant(int participantId, Champion champion, SummonerSpell summonerSpell1, SummonerSpell summonerSpell2, Item item0, Item item1, Item item2, Item item3, Item item4, Item item5, Item item6, int kills, int deaths, int assists, int largestKillingSpree, int largestMultiKill, int killingSprees, int longestTimeSpentLiving, int doubleKills, int tripleKills, int quadraKills, int pentaKills, int unrealKills, int totalDamageDealt, int magicDamageDealt, int physicalDamageDealt, int trueDamageDealt, int largestCriticalStrike, int totalDamageDealtToChampions, int magicDamageDealtToChampions, int physicalDamageDealtToChampions, int trueDamageDealtToChampions, int totalHeal, int totalUnitsHealed, int damageSelfMitigated, int damageDealtToObjectives, int damageDealtToTurrets, int visionScore, int timeCCingOthers, int totalDamageTaken, int magicDamageTaken, int physicalDamageTaken, int trueDamageTaken, int goldEarned, int goldSpent, int turretKills, int inhibitorKills, int totalMinionsKilled, int neutralMinionsKilled, int totalTimeCCDealt, int champLevel, int visionWardsBoughtInGame, int sightWardsBoughtInGame, int wardsPlaced, int wardsKilled, int firstBloodKill, int firstBloodAssist, int firstTowerKill, int firstTowerAssist, RuneData keyStoneData, RuneData primarySub1Data, RuneData primarySub2Data, RuneData primarySub3Data, RuneData secondarySub1Data, RuneData secondarySub2Data, RuneStyle primaryStyle, RuneStyle secondaryStyle, RuneStat statDefense, RuneStat statFlex, RuneStat statOffense, String role, String lane, int baronKills, int bountyLevel, int champExperience, int championTransform, int consumablesPurchased, int damageDealtToBuildings, int dragonKills, boolean gameEndedInEarlySurrender, boolean gameEndedInSurrender, String individualPosition, int inhibitorTakedowns, int inhibitorsLost, int itemsPurchased, int nexusKills, int nexusLost, int nexusTakedowns, int objectivesStolen, int objectivesStolenAssists, String summonerId, int spell1Casts, int spell2Casts, int spell3Casts, int spell4Casts, int summonerSpell1Casts, int summonerSpell2Casts, boolean teamEarlySurrendered, int teamId, String teamPosition, int timePlayed, int totalDamageShieldedOnTeammates, int totalHealsOnTeammates, int totalTimeSpentDead, int turretTakedowns, int turretsLost, boolean won, PingStats pingStats, int detectorWardsPlaced, boolean eligibleForProgression, ChallengeStats challenges) {
+    // ARENA DATA
+    private final int placement;
+    private final ArenaAugment playerAugment1;
+    private final ArenaAugment playerAugment2;
+    private final ArenaAugment playerAugment3;
+    private final ArenaAugment playerAugment4;
+    private final int playerSubteamId;
+    private final int subteamPlacement;
+
+    public MatchParticipant(int participantId, Champion champion, SummonerSpell summonerSpell1, SummonerSpell summonerSpell2, Item item0, Item item1, Item item2, Item item3, Item item4, Item item5, Item item6, int kills, int deaths, int assists, int largestKillingSpree, int largestMultiKill, int killingSprees, int longestTimeSpentLiving, int doubleKills, int tripleKills, int quadraKills, int pentaKills, int unrealKills, int totalDamageDealt, int magicDamageDealt, int physicalDamageDealt, int trueDamageDealt, int largestCriticalStrike, int totalDamageDealtToChampions, int magicDamageDealtToChampions, int physicalDamageDealtToChampions, int trueDamageDealtToChampions, int totalHeal, int totalUnitsHealed, int damageSelfMitigated, int damageDealtToObjectives, int damageDealtToTurrets, int visionScore, int timeCCingOthers, int totalDamageTaken, int magicDamageTaken, int physicalDamageTaken, int trueDamageTaken, int goldEarned, int goldSpent, int turretKills, int inhibitorKills, int totalMinionsKilled, int neutralMinionsKilled, int totalTimeCCDealt, int champLevel, int visionWardsBoughtInGame, int sightWardsBoughtInGame, int wardsPlaced, int wardsKilled, int firstBloodKill, int firstBloodAssist, int firstTowerKill, int firstTowerAssist, RuneData keyStoneData, RuneData primarySub1Data, RuneData primarySub2Data, RuneData primarySub3Data, RuneData secondarySub1Data, RuneData secondarySub2Data, RuneStyle primaryStyle, RuneStyle secondaryStyle, RuneStat statDefense, RuneStat statFlex, RuneStat statOffense, String role, String lane, int baronKills, int bountyLevel, int champExperience, int championTransform, int consumablesPurchased, int damageDealtToBuildings, int dragonKills, boolean gameEndedInEarlySurrender, boolean gameEndedInSurrender, String individualPosition, int inhibitorTakedowns, int inhibitorsLost, int itemsPurchased, int nexusKills, int nexusLost, int nexusTakedowns, int objectivesStolen, int objectivesStolenAssists, String summonerId, int spell1Casts, int spell2Casts, int spell3Casts, int spell4Casts, int summonerSpell1Casts, int summonerSpell2Casts, boolean teamEarlySurrendered, int teamId, String teamPosition, int timePlayed, int totalDamageShieldedOnTeammates, int totalHealsOnTeammates, int totalTimeSpentDead, int turretTakedowns, int turretsLost, boolean won, PingStats pingStats, int detectorWardsPlaced, boolean eligibleForProgression, ChallengeStats challenges, int placement, ArenaAugment playerAugment1, ArenaAugment playerAugment2, ArenaAugment playerAugment3, ArenaAugment playerAugment4, int playerSubteamId, int subteamPlacement) {
         this.participantId = participantId;
         this.champion = champion;
         this.summonerSpell1 = summonerSpell1;
@@ -236,450 +246,485 @@ public class MatchParticipant {
         this.detectorWardsPlaced = detectorWardsPlaced;
         this.eligibleForProgression = eligibleForProgression;
         this.challenges = challenges;
+        this.placement = placement;
+        this.playerAugment1 = playerAugment1;
+        this.playerAugment2 = playerAugment2;
+        this.playerAugment3 = playerAugment3;
+        this.playerAugment4 = playerAugment4;
+        this.playerSubteamId = playerSubteamId;
+        this.subteamPlacement = subteamPlacement;
     }
 
     public int getParticipantId() {
-        return this.participantId;
+        return participantId;
     }
 
     public Champion getChampion() {
-        return this.champion;
+        return champion;
     }
 
     public SummonerSpell getSummonerSpell1() {
-        return this.summonerSpell1;
+        return summonerSpell1;
     }
 
     public SummonerSpell getSummonerSpell2() {
-        return this.summonerSpell2;
+        return summonerSpell2;
     }
 
-    public Item getFirstItem() {
-        return this.item0;
+    public Item getItem0() {
+        return item0;
     }
 
-    public Item getSecondItem() {
-        return this.item1;
+    public Item getItem1() {
+        return item1;
     }
 
-    public Item getThirdItem() {
-        return this.item2;
+    public Item getItem2() {
+        return item2;
     }
 
-    public Item getForthItem() {
-        return this.item3;
+    public Item getItem3() {
+        return item3;
     }
 
-    public Item getFifthItem() {
-        return this.item4;
+    public Item getItem4() {
+        return item4;
     }
 
-    public Item getSixthItem() {
-        return this.item5;
+    public Item getItem5() {
+        return item5;
     }
 
-    public Item getSeventhItem() {
-        return this.item6;
+    public Item getItem6() {
+        return item6;
     }
 
     public int getKills() {
-        return this.kills;
+        return kills;
     }
 
     public int getDeaths() {
-        return this.deaths;
+        return deaths;
     }
 
     public int getAssists() {
-        return this.assists;
+        return assists;
     }
 
     public int getLargestKillingSpree() {
-        return this.largestKillingSpree;
+        return largestKillingSpree;
     }
 
     public int getLargestMultiKill() {
-        return this.largestMultiKill;
+        return largestMultiKill;
     }
 
     public int getKillingSprees() {
-        return this.killingSprees;
+        return killingSprees;
     }
 
     public int getLongestTimeSpentLiving() {
-        return this.longestTimeSpentLiving;
+        return longestTimeSpentLiving;
     }
 
     public int getDoubleKills() {
-        return this.doubleKills;
+        return doubleKills;
     }
 
     public int getTripleKills() {
-        return this.tripleKills;
+        return tripleKills;
     }
 
     public int getQuadraKills() {
-        return this.quadraKills;
+        return quadraKills;
     }
 
     public int getPentaKills() {
-        return this.pentaKills;
+        return pentaKills;
     }
 
     public int getUnrealKills() {
-        return this.unrealKills;
+        return unrealKills;
     }
 
     public int getTotalDamageDealt() {
-        return this.totalDamageDealt;
+        return totalDamageDealt;
     }
 
     public int getMagicDamageDealt() {
-        return this.magicDamageDealt;
+        return magicDamageDealt;
     }
 
     public int getPhysicalDamageDealt() {
-        return this.physicalDamageDealt;
+        return physicalDamageDealt;
     }
 
     public int getTrueDamageDealt() {
-        return this.trueDamageDealt;
+        return trueDamageDealt;
     }
 
     public int getLargestCriticalStrike() {
-        return this.largestCriticalStrike;
+        return largestCriticalStrike;
     }
 
     public int getTotalDamageDealtToChampions() {
-        return this.totalDamageDealtToChampions;
+        return totalDamageDealtToChampions;
     }
 
     public int getMagicDamageDealtToChampions() {
-        return this.magicDamageDealtToChampions;
+        return magicDamageDealtToChampions;
     }
 
     public int getPhysicalDamageDealtToChampions() {
-        return this.physicalDamageDealtToChampions;
+        return physicalDamageDealtToChampions;
     }
 
     public int getTrueDamageDealtToChampions() {
-        return this.trueDamageDealtToChampions;
+        return trueDamageDealtToChampions;
     }
 
     public int getTotalHeal() {
-        return this.totalHeal;
+        return totalHeal;
     }
 
     public int getTotalUnitsHealed() {
-        return this.totalUnitsHealed;
+        return totalUnitsHealed;
     }
 
     public int getDamageSelfMitigated() {
-        return this.damageSelfMitigated;
+        return damageSelfMitigated;
     }
 
     public int getDamageDealtToObjectives() {
-        return this.damageDealtToObjectives;
+        return damageDealtToObjectives;
     }
 
     public int getDamageDealtToTurrets() {
-        return this.damageDealtToTurrets;
+        return damageDealtToTurrets;
     }
 
     public int getVisionScore() {
-        return this.visionScore;
+        return visionScore;
     }
 
     public int getTimeCCingOthers() {
-        return this.timeCCingOthers;
+        return timeCCingOthers;
     }
 
     public int getTotalDamageTaken() {
-        return this.totalDamageTaken;
+        return totalDamageTaken;
     }
 
     public int getMagicDamageTaken() {
-        return this.magicDamageTaken;
+        return magicDamageTaken;
     }
 
     public int getPhysicalDamageTaken() {
-        return this.physicalDamageTaken;
+        return physicalDamageTaken;
     }
 
     public int getTrueDamageTaken() {
-        return this.trueDamageTaken;
+        return trueDamageTaken;
     }
 
     public int getGoldEarned() {
-        return this.goldEarned;
+        return goldEarned;
     }
 
     public int getGoldSpent() {
-        return this.goldSpent;
+        return goldSpent;
     }
 
     public int getTurretKills() {
-        return this.turretKills;
+        return turretKills;
     }
 
     public int getInhibitorKills() {
-        return this.inhibitorKills;
+        return inhibitorKills;
     }
 
     public int getTotalMinionsKilled() {
-        return this.totalMinionsKilled;
+        return totalMinionsKilled;
     }
 
     public int getNeutralMinionsKilled() {
-        return this.neutralMinionsKilled;
+        return neutralMinionsKilled;
     }
 
     public int getTotalTimeCCDealt() {
-        return this.totalTimeCCDealt;
+        return totalTimeCCDealt;
     }
 
     public int getChampLevel() {
-        return this.champLevel;
+        return champLevel;
     }
 
     public int getVisionWardsBoughtInGame() {
-        return this.visionWardsBoughtInGame;
+        return visionWardsBoughtInGame;
     }
 
     public int getSightWardsBoughtInGame() {
-        return this.sightWardsBoughtInGame;
+        return sightWardsBoughtInGame;
     }
 
     public int getWardsPlaced() {
-        return this.wardsPlaced;
+        return wardsPlaced;
     }
 
     public int getWardsKilled() {
-        return this.wardsKilled;
+        return wardsKilled;
     }
 
     public int getFirstBloodKill() {
-        return this.firstBloodKill;
+        return firstBloodKill;
     }
 
     public int getFirstBloodAssist() {
-        return this.firstBloodAssist;
+        return firstBloodAssist;
     }
 
     public int getFirstTowerKill() {
-        return this.firstTowerKill;
+        return firstTowerKill;
     }
 
     public int getFirstTowerAssist() {
-        return this.firstTowerAssist;
+        return firstTowerAssist;
     }
 
     public RuneData getKeyStoneData() {
-        return this.keyStoneData;
+        return keyStoneData;
     }
 
     public RuneData getPrimarySub1Data() {
-        return this.primarySub1Data;
+        return primarySub1Data;
     }
 
     public RuneData getPrimarySub2Data() {
-        return this.primarySub2Data;
+        return primarySub2Data;
     }
 
     public RuneData getPrimarySub3Data() {
-        return this.primarySub3Data;
+        return primarySub3Data;
     }
 
     public RuneData getSecondarySub1Data() {
-        return this.secondarySub1Data;
+        return secondarySub1Data;
     }
 
     public RuneData getSecondarySub2Data() {
-        return this.secondarySub2Data;
+        return secondarySub2Data;
     }
 
     public RuneStyle getPrimaryStyle() {
-        return this.primaryStyle;
+        return primaryStyle;
     }
 
     public RuneStyle getSecondaryStyle() {
-        return this.secondaryStyle;
+        return secondaryStyle;
     }
 
     public RuneStat getStatDefense() {
-        return this.statDefense;
+        return statDefense;
     }
 
     public RuneStat getStatFlex() {
-        return this.statFlex;
+        return statFlex;
     }
 
     public RuneStat getStatOffense() {
-        return this.statOffense;
+        return statOffense;
     }
 
     public String getRole() {
-        return this.role;
+        return role;
     }
 
     public String getLane() {
-        return this.lane;
+        return lane;
     }
 
     public int getBaronKills() {
-        return this.baronKills;
+        return baronKills;
     }
 
     public int getBountyLevel() {
-        return this.bountyLevel;
+        return bountyLevel;
     }
 
     public int getChampExperience() {
-        return this.champExperience;
+        return champExperience;
     }
 
     public int getChampionTransform() {
-        return this.championTransform;
+        return championTransform;
     }
 
     public int getConsumablesPurchased() {
-        return this.consumablesPurchased;
+        return consumablesPurchased;
     }
 
     public int getDamageDealtToBuildings() {
-        return this.damageDealtToBuildings;
+        return damageDealtToBuildings;
     }
 
     public int getDragonKills() {
-        return this.dragonKills;
+        return dragonKills;
     }
 
     public boolean isGameEndedInEarlySurrender() {
-        return this.gameEndedInEarlySurrender;
+        return gameEndedInEarlySurrender;
     }
 
     public boolean isGameEndedInSurrender() {
-        return this.gameEndedInSurrender;
+        return gameEndedInSurrender;
     }
 
     public String getIndividualPosition() {
-        return this.individualPosition;
+        return individualPosition;
     }
 
     public int getInhibitorTakedowns() {
-        return this.inhibitorTakedowns;
+        return inhibitorTakedowns;
     }
 
     public int getInhibitorsLost() {
-        return this.inhibitorsLost;
+        return inhibitorsLost;
     }
 
     public int getItemsPurchased() {
-        return this.itemsPurchased;
+        return itemsPurchased;
     }
 
     public int getNexusKills() {
-        return this.nexusKills;
+        return nexusKills;
     }
 
     public int getNexusLost() {
-        return this.nexusLost;
+        return nexusLost;
     }
 
     public int getNexusTakedowns() {
-        return this.nexusTakedowns;
+        return nexusTakedowns;
     }
 
     public int getObjectivesStolen() {
-        return this.objectivesStolen;
+        return objectivesStolen;
     }
 
     public int getObjectivesStolenAssists() {
-        return this.objectivesStolenAssists;
+        return objectivesStolenAssists;
     }
 
     public String getSummonerId() {
-        return this.summonerId;
+        return summonerId;
     }
 
     public int getSpell1Casts() {
-        return this.spell1Casts;
+        return spell1Casts;
     }
 
     public int getSpell2Casts() {
-        return this.spell2Casts;
+        return spell2Casts;
     }
 
     public int getSpell3Casts() {
-        return this.spell3Casts;
+        return spell3Casts;
     }
 
     public int getSpell4Casts() {
-        return this.spell4Casts;
+        return spell4Casts;
     }
 
     public int getSummonerSpell1Casts() {
-        return this.summonerSpell1Casts;
+        return summonerSpell1Casts;
     }
 
     public int getSummonerSpell2Casts() {
-        return this.summonerSpell2Casts;
+        return summonerSpell2Casts;
     }
 
     public boolean isTeamEarlySurrendered() {
-        return this.teamEarlySurrendered;
+        return teamEarlySurrendered;
     }
 
     public int getTeamId() {
-        return this.teamId;
+        return teamId;
     }
 
     public String getTeamPosition() {
-        return this.teamPosition;
+        return teamPosition;
     }
 
     public int getTimePlayed() {
-        return this.timePlayed;
+        return timePlayed;
     }
 
     public int getTotalDamageShieldedOnTeammates() {
-        return this.totalDamageShieldedOnTeammates;
+        return totalDamageShieldedOnTeammates;
     }
 
     public int getTotalHealsOnTeammates() {
-        return this.totalHealsOnTeammates;
+        return totalHealsOnTeammates;
     }
 
     public int getTotalTimeSpentDead() {
-        return this.totalTimeSpentDead;
+        return totalTimeSpentDead;
     }
 
     public int getTurretTakedowns() {
-        return this.turretTakedowns;
+        return turretTakedowns;
     }
 
     public int getTurretsLost() {
-        return this.turretsLost;
+        return turretsLost;
     }
 
     public boolean isWon() {
-        return this.won;
+        return won;
     }
 
-    public PingStats getPings() {
-        return this.pingStats;
+    public PingStats getPingStats() {
+        return pingStats;
     }
 
     public int getDetectorWardsPlaced() {
-        return this.detectorWardsPlaced;
+        return detectorWardsPlaced;
     }
 
     public boolean isEligibleForProgression() {
-        return this.eligibleForProgression;
+        return eligibleForProgression;
     }
 
     public ChallengeStats getChallenges() {
-        return this.challenges;
+        return challenges;
+    }
+
+    public int getPlacement() {
+        return placement;
+    }
+
+    public ArenaAugment getPlayerAugment1() {
+        return playerAugment1;
+    }
+
+    public ArenaAugment getPlayerAugment2() {
+        return playerAugment2;
+    }
+
+    public ArenaAugment getPlayerAugment3() {
+        return playerAugment3;
+    }
+
+    public ArenaAugment getPlayerAugment4() {
+        return playerAugment4;
+    }
+
+    public int getPlayerSubteamId() {
+        return playerSubteamId;
+    }
+
+    public int getSubteamPlacement() {
+        return subteamPlacement;
     }
 
     @Override

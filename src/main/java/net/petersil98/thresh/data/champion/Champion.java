@@ -5,6 +5,7 @@ import net.petersil98.stcommons.data.Sprite;
 import net.petersil98.thresh.model.Deserializers;
 
 import java.util.List;
+import java.util.Objects;
 
 @JsonDeserialize(using = Deserializers.ChampionDeserializer.class)
 public class Champion {
@@ -94,5 +95,18 @@ public class Champion {
     @Override
     public String toString() {
         return this.name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Champion champion = (Champion) o;
+        return id == champion.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

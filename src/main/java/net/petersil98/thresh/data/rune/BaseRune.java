@@ -44,16 +44,14 @@ public abstract class BaseRune {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj == null || obj.getClass() != this.getClass()) return false;
-        var that = (BaseRune) obj;
-        return this.id == that.id;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BaseRune baseRune)) return false;
+        return id == baseRune.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id);
+        return Objects.hash(id);
     }
-
 }

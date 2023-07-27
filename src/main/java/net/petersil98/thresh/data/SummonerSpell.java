@@ -5,6 +5,7 @@ import net.petersil98.stcommons.data.Sprite;
 import net.petersil98.thresh.model.Deserializers;
 
 import java.util.List;
+import java.util.Objects;
 
 @JsonDeserialize(using = Deserializers.SummonerSpellDeserializer.class)
 public class SummonerSpell {
@@ -70,5 +71,18 @@ public class SummonerSpell {
     @Override
     public String toString() {
         return this.name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SummonerSpell that = (SummonerSpell) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
