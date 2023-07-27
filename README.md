@@ -24,7 +24,7 @@ dependencies {
     ...
     implementation 'com.github.Petersil1998:Core:v1.4'
     implementation 'com.github.Petersil1998:STCommons:v1.3'
-    implementation 'com.github.Petersil1998:Thresh-Java:v1.2'
+    implementation 'com.github.Petersil1998:Thresh-Java:v1.3'
 }
 ```
 
@@ -51,7 +51,7 @@ or using **Maven**:
 <dependency>
     <groupId>com.github.Petersil1998</groupId>
     <artifactId>Thresh-Java</artifactId>
-    <version>v1.2</version>
+    <version>v1.3</version>
 </dependency>
 ```
 

@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'net.petersil98'
-version 'v1.2'
+version 'v1.3'
 
 allprojects {
     repositories {
