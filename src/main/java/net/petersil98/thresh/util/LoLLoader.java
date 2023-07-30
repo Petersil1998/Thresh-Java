@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 
 import static net.petersil98.thresh.model.Deserializers.MAPPER;
 
-//TODO: Check image locations
 public class LoLLoader extends Loader {
 
     private static String latestDDragonVersion;
@@ -44,6 +43,7 @@ public class LoLLoader extends Loader {
         loadRunes();
         loadRuneStats();
         loadMaps();
+        loadSkinLines();
         loadChampions();
         loadQueueTypes();
         loadItems();
@@ -97,7 +97,7 @@ public class LoLLoader extends Loader {
                         int id = rune.get("id").asInt();
                         runes.put(id, new Rune(id,
                                 rune.get("name").asText(),
-                                rune.get("icon").asText(),
+                                String.format("%scdn/img/%s", STConstants.DDRAGON_BASE_PATH, rune.get("icon").asText()),
                                 rune.get("key").asText(),
                                 rune.get("shortDesc").asText(),
                                 rune.get("longDesc").asText(),
@@ -143,10 +143,24 @@ public class LoLLoader extends Loader {
         }
     }
 
+    private void loadSkinLines() {
+        try(InputStream in = new URI("https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/skinlines.json").toURL().openStream()) {
+            List<SkinLine> skinLines = MAPPER.readerForListOf(SkinLine.class).readValue(MAPPER.readTree(in));
+            setFieldInCollection(SkinLines.class, skinLines.stream().collect(Collectors.toMap(SkinLine::getId, skinLine -> skinLine)));
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void loadChampions() {
-        try(InputStream in = new URI(String.format("%scdn/%s/data/%s/championFull.json", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openConnection().getInputStream()) {
+        try(InputStream in = new URI(String.format("%scdn/%s/data/%s/championFull.json", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION, Settings.getLanguage().toString())).toURL().openStream()) {
             Map<Integer, Champion> champions = new HashMap<>();
             for(JsonNode node: MAPPER.readTree(in).get("data")) {
+                JsonNode cdragonRoot = MAPPER.readTree(new URI(String.format("https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champions/%d.json", node.get("key").asInt())).toURL().openStream());
+                ((ObjectNode)node).put("id", cdragonRoot.get("alias").asText());
+                ((ObjectNode)node).set("tacticalInfo", cdragonRoot.get("tacticalInfo"));
+                ((ObjectNode)node).replace("skins", cdragonRoot.get("skins"));
+                ((ObjectNode)node).replace("info", cdragonRoot.get("playstyleInfo"));
                 Champion champion = MAPPER.readerFor(Champion.class).readValue(node);
                 champions.put(champion.getId(), champion);
             }

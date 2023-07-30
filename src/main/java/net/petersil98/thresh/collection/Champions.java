@@ -16,7 +16,7 @@ public class Champions {
 
     public static Champion getChampionByName(String name){
         String finalName = name.replaceAll("[^A-Za-z]","");
-        return getChampions().stream().filter(champion -> champion.getName().replaceAll("[^A-Za-z]","").equals(finalName)).findFirst().orElse(null);
+        return getChampions().stream().filter(champion -> champion.getName().equals(finalName) || champion.getApiName().equals(finalName)).findFirst().orElse(null);
     }
 
     public static List<Champion> getChampions() {

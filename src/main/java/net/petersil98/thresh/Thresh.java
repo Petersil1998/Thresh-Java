@@ -8,7 +8,6 @@ import net.petersil98.stcommons.constants.*;
 import net.petersil98.stcommons.model.Summoner;
 import net.petersil98.stcommons.model.league.League;
 import net.petersil98.stcommons.model.league.RankEntry;
-import net.petersil98.thresh.collection.*;
 import net.petersil98.thresh.model.ChampionMasteries;
 import net.petersil98.thresh.model.LoLRanked;
 import net.petersil98.thresh.model.PlayerRanks;
@@ -47,17 +46,8 @@ public class Thresh {
         League challengers = LoLRanked.getChallengerLeague(RankedQueue.SOLO_DUO, LeaguePlatform.EUW);
         List<RankEntry> leagueEntries = LoLRanked.getRankEntries(RankedDivision.I, RankedTier.BRONZE, RankedQueue.FLEX, LeaguePlatform.EUW);
         MatchDetails details = MatchDetails.getMatchDetails("EUW1_987654321", LeagueRegion.EUROPE);
-        System.out.println(Util.getChallengeIconURL(Challenges.getChallenges().stream().filter(challenge -> !challenge.getLevelToIconPath().isEmpty()).findAny().get(), RankedTier.BRONZE));
         ActiveGame game = ActiveGame.ofSummoner(Summoner.getSummonerByName("prinzessin", LeaguePlatform.EUW).getId(), LeaguePlatform.EUW);
         System.out.println(game.getSpectatorCommandWindows("C:\\"));
         System.out.println(Util.getProfileIconURL(me.getProfileIcon()));
-        System.out.println(Util.getChampionIconURL(Champions.getChampionByName("Thresh")));
-        System.out.println(Util.getRuneIconURL(RuneStyles.getRuneStyles().get(2)));
-        System.out.println(Util.getRuneIconURL(RuneStats.getRuneStats().get(1)));
-        System.out.println(RuneStyles.getRuneStyles());
-        System.out.println(Runes.getRunes());
-        System.out.println(RuneStats.getRuneStats());
-        Items.getItem(1001).getInto().forEach(System.out::println);
-        System.out.println(SummonerSpells.getSummonerSpell(14));
     }
 }

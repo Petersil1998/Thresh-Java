@@ -1,20 +1,33 @@
 package net.petersil98.thresh.data;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import net.petersil98.stcommons.constants.RankedTier;
+import net.petersil98.thresh.model.Deserializers;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+@JsonDeserialize(using = Deserializers.ChallengeDeserializer.class)
 public class Challenge {
 
-    private int id;
-    private String name;
-    private String description;
-    private String shortDescription;
-    private boolean hasLeaderboard;
-    private Map<RankedTier, String> levelToIconPath;
-    private Map<RankedTier, Threshold> thresholds;
+    private final int id;
+    private final String name;
+    private final String description;
+    private final String shortDescription;
+    private final boolean hasLeaderboard;
+    private final Map<RankedTier, String> levelToIconPath;
+    private final Map<RankedTier, Threshold> thresholds;
+
+    public Challenge(int id, String name, String description, String shortDescription, boolean hasLeaderboard, Map<RankedTier, String> levelToIconPath, Map<RankedTier, Threshold> thresholds) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.shortDescription = shortDescription;
+        this.hasLeaderboard = hasLeaderboard;
+        this.levelToIconPath = levelToIconPath;
+        this.thresholds = thresholds;
+    }
 
     public int getId() {
         return id;
@@ -44,16 +57,9 @@ public class Challenge {
         return thresholds;
     }
 
-    static class Threshold {
+    public static class Threshold {
         private int value;
         private List<Reward> rewards;
-
-        public Threshold(int value, List<Reward> rewards) {
-            this.value = value;
-            this.rewards = rewards;
-        }
-
-        public Threshold() {}
 
         public int getValue() {
             return value;
@@ -64,18 +70,10 @@ public class Challenge {
         }
     }
 
-    static class Reward {
+    public static class Reward {
         private String category;
         private int quantity;
-        private  String title;
-
-        private Reward(String category, int quantity, String title) {
-            this.category = category;
-            this.quantity = quantity;
-            this.title = title;
-        }
-
-        private Reward() {}
+        private String title;
 
         public String getCategory() {
             return category;

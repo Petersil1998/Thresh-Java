@@ -1,36 +1,30 @@
 package net.petersil98.thresh.data.champion;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import net.petersil98.thresh.model.Deserializers;
+public class PlayStyleInfo {
 
-@JsonDeserialize(using = Deserializers.InfoDeserializer.class)
-public class Info {
+    private int damage;
+    private int durability;
+    private int crowdControl;
+    private int mobility;
+    private int utility;
 
-    private final int attack;
-    private final int defense;
-    private final int magic;
-    private final int difficulty;
-
-    public Info(int attack, int defense, int magic, int difficulty) {
-        this.attack = attack;
-        this.defense = defense;
-        this.magic = magic;
-        this.difficulty = difficulty;
+    public int getDamage() {
+        return damage;
     }
 
-    public int getAttack() {
-        return attack;
+    public int getDurability() {
+        return durability;
     }
 
-    public int getDefense() {
-        return defense;
+    public int getCrowdControl() {
+        return crowdControl;
     }
 
-    public int getMagic() {
-        return magic;
+    public int getMobility() {
+        return mobility;
     }
 
-    public int getDifficulty() {
-        return difficulty;
+    public int getUtility() {
+        return utility;
     }
 }

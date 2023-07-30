@@ -1,7 +1,6 @@
 package net.petersil98.thresh.data.champion;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import net.petersil98.stcommons.data.Sprite;
 import net.petersil98.thresh.model.Deserializers;
 
 import java.util.List;
@@ -11,37 +10,41 @@ import java.util.Objects;
 public class Champion {
 
     private final int id;
+    private final String apiName;
     private final String name;
     private final String title;
-    private final String fullImage;
-    private final Sprite sprite;
     private final List<Skin> skins;
     private final String lore;
     private final List<String> allyTips;
     private final List<String> enemyTips;
     private final List<String> tags;
     private final String resourceType;
-    private final Info info;
+    private final TacticalInfo tacticalInfo;
+    private final PlayStyleInfo playStyleInfo;
     private final Stats baseStats;
 
-    public Champion(int id, String name, String title, String fullImage, Sprite sprite, List<Skin> skins, String lore, List<String> allyTips, List<String> enemyTips, List<String> tags, String resourceType, Info info, Stats baseStats) {
+    public Champion(int id, String apiName, String name, String title, List<Skin> skins, String lore, List<String> allyTips, List<String> enemyTips, List<String> tags, String resourceType, TacticalInfo tacticalInfo, PlayStyleInfo playStyleInfo, Stats baseStats) {
         this.id = id;
+        this.apiName = apiName;
         this.name = name;
         this.title = title;
-        this.fullImage = fullImage;
-        this.sprite = sprite;
         this.skins = skins;
         this.lore = lore;
         this.allyTips = allyTips;
         this.enemyTips = enemyTips;
         this.tags = tags;
         this.resourceType = resourceType;
-        this.info = info;
+        this.tacticalInfo = tacticalInfo;
+        this.playStyleInfo = playStyleInfo;
         this.baseStats = baseStats;
     }
 
     public int getId() {
         return id;
+    }
+
+    public String getApiName() {
+        return apiName;
     }
 
     public String getName() {
@@ -50,14 +53,6 @@ public class Champion {
 
     public String getTitle() {
         return title;
-    }
-
-    public String getFullImage() {
-        return fullImage;
-    }
-
-    public Sprite getSprite() {
-        return sprite;
     }
 
     public List<Skin> getSkins() {
@@ -84,8 +79,12 @@ public class Champion {
         return resourceType;
     }
 
-    public Info getInfo() {
-        return info;
+    public TacticalInfo getTacticalInfo() {
+        return tacticalInfo;
+    }
+
+    public PlayStyleInfo getPlayStyleInfo() {
+        return playStyleInfo;
     }
 
     public Stats getBaseStats() {

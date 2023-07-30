@@ -1,23 +1,33 @@
 package net.petersil98.thresh.data;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import net.petersil98.thresh.model.Deserializers;
 
 import java.util.Map;
 import java.util.Objects;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDeserialize(using = Deserializers.ArenaAugmentDeserializer.class)
 public class ArenaAugment {
 
-    private int id;
-    private String name;
-    private int rarity;
-    private String tooltip;
-    @JsonProperty("desc")
-    private String description;
-    private String iconLarge;
-    private String iconSmall;
-    private Map<String, Double> dataValues;
+    private final int id;
+    private final String name;
+    private final int rarity;
+    private final String tooltip;
+    private final String description;
+    private final String iconLarge;
+    private final String iconSmall;
+    private final Map<String, Double> dataValues;
+
+    public ArenaAugment(int id, String name, int rarity, String tooltip, String description, String iconLarge, String iconSmall, Map<String, Double> dataValues) {
+        this.id = id;
+        this.name = name;
+        this.rarity = rarity;
+        this.tooltip = tooltip;
+        this.description = description;
+        this.iconLarge = iconLarge;
+        this.iconSmall = iconSmall;
+        this.dataValues = dataValues;
+    }
 
     public int getId() {
         return id;

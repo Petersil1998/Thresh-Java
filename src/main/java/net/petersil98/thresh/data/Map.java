@@ -7,7 +7,35 @@ import net.petersil98.thresh.model.Deserializers;
 import java.util.Objects;
 
 @JsonDeserialize(using = Deserializers.MapDeserializer.class)
-public record Map(int id, String name, String fullImage, Sprite sprite) {
+public class Map {
+
+    private final int id;
+    private final String name;
+    private final String fullImage;
+    private final Sprite sprite;
+
+    public Map(int id, String name, String fullImage, Sprite sprite) {
+        this.id = id;
+        this.name = name;
+        this.fullImage = fullImage;
+        this.sprite = sprite;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getFullImage() {
+        return fullImage;
+    }
+
+    public Sprite getSprite() {
+        return sprite;
+    }
 
     @Override
     public String toString() {

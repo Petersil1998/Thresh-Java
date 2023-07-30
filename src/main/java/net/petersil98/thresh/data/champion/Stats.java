@@ -1,30 +1,47 @@
 package net.petersil98.thresh.data.champion;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import net.petersil98.thresh.model.Deserializers;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@JsonDeserialize(using = Deserializers.StatsDeserializer.class)
 public class Stats {
 
+    @JsonProperty("hp")
     private float health;
+    @JsonProperty("hpperlevel")
     private float healthPerLevel;
+    @JsonProperty("mp")
     private float resource;
+    @JsonProperty("mpperlevel")
     private float resourcePerLevel;
+    @JsonProperty("movespeed")
     private int movementSpeed;
     private float armor;
+    @JsonProperty("armorperlevel")
     private float armorPerLevel;
+    @JsonProperty("spellblock")
     private float magicResist;
+    @JsonProperty("spellblockperlevel")
     private float magicResistPerLevel;
+    @JsonProperty("attackrange")
     private int attackRange;
+    @JsonProperty("hpregen")
     private float healthRegeneration;
+    @JsonProperty("hpregenperlevel")
     private float healthRegenerationPerLevel;
+    @JsonProperty("mpregen")
     private float resourceRegeneration;
+    @JsonProperty("mpregenperlevel")
     private float resourceRegenerationPerLevel;
+    @JsonProperty("crit")
     private float critChance;
+    @JsonProperty("critperlevel")
     private float critChancePerLevel;
+    @JsonProperty("attackdamage")
     private float attackDamage;
+    @JsonProperty("attackdamageperlevel")
     private float attackDamagePerLevel;
+    @JsonProperty("attackspeed")
     private float attackSpeed;
+    @JsonProperty("attackspeedperlevel")
     private float attackSpeedPerLevel;
 
     public Stats(float health, float healthPerLevel, float resource, float resourcePerLevel, int movementSpeed, float armor, float armorPerLevel, float magicResist, float magicResistPerLevel, int attackRange, float healthRegeneration, float healthRegenerationPerLevel, float resourceRegeneration, float resourceRegenerationPerLevel, float critChance, float critChancePerLevel, float attackDamage, float attackDamagePerLevel, float attackSpeed, float attackSpeedPerLevel) {

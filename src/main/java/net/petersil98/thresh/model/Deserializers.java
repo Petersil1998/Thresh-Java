@@ -2,16 +2,15 @@ package net.petersil98.thresh.model;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import net.petersil98.stcommons.constants.LeaguePlatform;
+import net.petersil98.stcommons.constants.RankedTier;
+import net.petersil98.stcommons.constants.STConstants;
 import net.petersil98.stcommons.data.Sprite;
 import net.petersil98.thresh.Thresh;
 import net.petersil98.thresh.collection.*;
-import net.petersil98.thresh.data.Item;
-import net.petersil98.thresh.data.SummonerSpell;
-import net.petersil98.thresh.data.champion.Champion;
-import net.petersil98.thresh.data.champion.Info;
-import net.petersil98.thresh.data.champion.Skin;
-import net.petersil98.thresh.data.champion.Stats;
+import net.petersil98.thresh.data.*;
+import net.petersil98.thresh.data.champion.*;
 import net.petersil98.thresh.data.rune.BaseRune;
 import net.petersil98.thresh.data.rune.RuneStat;
 import net.petersil98.thresh.data.rune.RuneStyle;
@@ -22,12 +21,14 @@ import net.petersil98.thresh.model.match.participant.ChallengeStats;
 import net.petersil98.thresh.model.match.participant.MatchParticipant;
 import net.petersil98.thresh.model.match.participant.PingStats;
 import net.petersil98.thresh.model.match.participant.RuneData;
+import net.petersil98.thresh.model.match.timeline.Point;
 import net.petersil98.thresh.model.match.timeline.*;
 import net.petersil98.thresh.model.match.timeline.event.*;
 import net.petersil98.thresh.model.spectator.ActiveGame;
 import net.petersil98.thresh.model.spectator.Ban;
 import net.petersil98.thresh.model.spectator.Participant;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -547,7 +548,7 @@ public class Deserializers {
             JsonNode root = jp.getCodec().readTree(jp);
 
             return new RuneStyle(root.get("id").asInt(), root.get("name").asText(),
-                    root.get("icon").asText(), root.get("key").asText());
+                    String.format("%scdn/img/%s", STConstants.DDRAGON_BASE_PATH, root.get("icon").asText()), root.get("key").asText());
         }
     }
 
@@ -557,7 +558,8 @@ public class Deserializers {
         public RuneStat deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
             JsonNode root = jp.getCodec().readTree(jp);
 
-            return new RuneStat(root.get("id").asInt(), root.get("name").asText(), root.get("iconPath").asText(),
+            return new RuneStat(root.get("id").asInt(), root.get("name").asText(),
+                    String.format("%scdn/img/%s", STConstants.DDRAGON_BASE_PATH, root.get("iconPath").asText()),
                     root.get("shortDesc").asText(), root.get("longDesc").asText());
         }
     }
@@ -570,7 +572,8 @@ public class Deserializers {
 
             Sprite sprite = deserializeSprite(root.get("image"));
             return new net.petersil98.thresh.data.Map(root.get("MapId").asInt(), root.get("MapName").asText(),
-                    root.get("image").get("full").asText(), sprite);
+                    String.format("%scdn/%s/img/%s/%s", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION,
+                            sprite.getGroup(), root.get("image").get("full").asText()), sprite);
         }
     }
 
@@ -581,46 +584,14 @@ public class Deserializers {
         public Champion deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
             JsonNode root = jp.getCodec().readTree(jp);
 
-            Sprite sprite = deserializeSprite(root.get("image"));
-            List<Skin> skins = MAPPER.readerForListOf(Skin.class).readValue(root.get("skins"));
-            Info info = MAPPER.readerFor(Info.class).readValue(root.get("info"));
-            Stats stats = MAPPER.readerFor(Stats.class).readValue(root.get("stats"));
-            return new Champion(root.get("key").asInt(), root.get("name").asText(),
-                    root.get("title").asText(), root.get("image").get("full").asText(), sprite, skins, root.get("lore").asText(),
+            return new Champion(root.get("key").asInt(), root.get("id").asText(), root.get("name").asText(), root.get("title").asText(),
+                    MAPPER.readerForListOf(Skin.class).readValue(root.get("skins")), root.get("lore").asText(),
                     MAPPER.readerForListOf(String.class).readValue(root.get("allytips")),
                     MAPPER.readerForListOf(String.class).readValue(root.get("enemytips")),
-                    MAPPER.readerForListOf(String.class).readValue(root.get("tags")),
-                    root.get("partype").asText(), info, stats);
-        }
-    }
-
-    public static class StatsDeserializer extends JsonDeserializer<Stats> {
-
-        @Override
-        public Stats deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-            JsonNode root = jp.getCodec().readTree(jp);
-
-            return new Stats((float) root.get("hp").asDouble(), (float) root.get("hpperlevel").asDouble(),
-                    (float) root.get("mp").asDouble(), (float) root.get("mpperlevel").asDouble(), root.get("movespeed").asInt(),
-                    (float) root.get("armor").asDouble(), (float) root.get("armorperlevel").asDouble(),
-                    (float) root.get("spellblock").asDouble(), (float) root.get("spellblockperlevel").asDouble(),
-                    root.get("attackrange").asInt(), (float) root.get("hpregen").asDouble(),
-                    (float) root.get("hpregenperlevel").asDouble(), (float) root.get("mpregen").asDouble(),
-                    (float) root.get("mpregenperlevel").asDouble(), (float) root.get("crit").asDouble(),
-                    (float) root.get("critperlevel").asDouble(), (float) root.get("attackdamage").asDouble(),
-                    (float) root.get("attackdamageperlevel").asDouble(), (float) root.get("attackspeed").asDouble(),
-                    (float) root.get("attackspeedperlevel").asDouble());
-        }
-    }
-
-    public static class InfoDeserializer extends JsonDeserializer<Info> {
-
-        @Override
-        public Info deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-            JsonNode root = jp.getCodec().readTree(jp);
-
-            return new Info(root.get("attack").asInt(), root.get("defense").asInt(),
-                    root.get("magic").asInt(), root.get("difficulty").asInt());
+                    MAPPER.readerForListOf(String.class).readValue(root.get("tags")), root.get("partype").asText(),
+                    MAPPER.readerFor(TacticalInfo.class).readValue(root.get("tacticalInfo")),
+                    MAPPER.readerFor(PlayStyleInfo.class).readValue(root.get("info")),
+                    MAPPER.readerFor(Stats.class).readValue(root.get("stats")));
         }
     }
 
@@ -629,9 +600,38 @@ public class Deserializers {
         @Override
         public Skin deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
             JsonNode root = jp.getCodec().readTree(jp);
+            List<SkinLine> skinLines = StreamSupport.stream(root.get("skinLines").spliterator(), false)
+                    .map(node -> node.get("id").asInt())
+                    .map(SkinLines::getSkinLine)
+                    .toList();
 
-            return new Skin(root.get("id").asInt(), root.get("num").asInt(),
-                    root.get("name").asText(), root.get("chromas").asBoolean());
+            return new Skin(root.get("id").asInt(), root.get("isBase").asBoolean(), root.get("name").asText(),
+                    "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/" +
+                            root.get("uncenteredSplashPath").asText().replace("/lol-game-data/assets/", ""),
+                    "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/" +
+                            root.get("tilePath").asText().replace("/lol-game-data/assets/", ""),
+                    "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/" +
+                            root.get("loadScreenPath").asText().replace("/lol-game-data/assets/", ""),
+                    MAPPER.readerFor(Rarity.class).readValue(root.get("rarity")),
+                    root.get("isLegacy").asBoolean(), root.has("chromas") ?
+                    MAPPER.readerForListOf(Chroma.class).readValue(root.get("chromas")) : null,
+                    skinLines, root.get("description").asText(null));
+        }
+    }
+
+    public static class ChromaDeserializer extends JsonDeserializer<Chroma> {
+
+        @Override
+        public Chroma deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+            JsonNode root = jp.getCodec().readTree(jp);
+
+            List<Color> colors = StreamSupport.stream(root.get("colors").spliterator(), false)
+                    .map(JsonNode::asText)
+                    .map(s -> new Color(Integer.parseInt(s.substring(1), 16)))
+                    .toList();
+            return new Chroma(root.get("id").asInt(), root.get("name").asText(null),
+                    "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/" +
+                            root.get("chromaPath").asText().replace("/lol-game-data/assets/", ""), colors);
         }
     }
 
@@ -641,6 +641,7 @@ public class Deserializers {
         public Item deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
             JsonNode root = jp.getCodec().readTree(jp);
 
+            Sprite sprite = deserializeSprite(root.get("image"));
             java.util.Map<net.petersil98.thresh.data.Map, Boolean> maps = root.get("maps").properties().stream().collect(Collectors
                     .toMap(entry -> Maps.getMap(Integer.parseInt(entry.getKey())), entry -> entry.getValue().asBoolean()));
             return new Item(root.get("id").asInt(),
@@ -658,7 +659,8 @@ public class Deserializers {
                     MAPPER.readerForMapOf(Float.class).readValue(root.get("stats")),
                     MAPPER.readerForListOf(String.class).readValue(root.get("tags")),
                     maps.entrySet().stream().filter(java.util.Map.Entry::getValue).map(Map.Entry::getKey).collect(Collectors.toList()),
-                    deserializeSprite(root.get("image")), root.get("image").get("full").asText(),
+                    sprite, String.format("%scdn/%s/img/%s/%s", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION,
+                    sprite.getGroup(), root.get("image").get("full").asText()),
                     root.has("effect") ? MAPPER.readerForMapOf(String.class).readValue(root.get("effect")) : java.util.Map.of());
         }
     }
@@ -670,15 +672,48 @@ public class Deserializers {
         public SummonerSpell deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
             JsonNode root = jp.getCodec().readTree(jp);
 
+            Sprite sprite = deserializeSprite(root.get("image"));
             return new SummonerSpell(root.get("key").asInt(), root.get("name").asText(), root.get("description").asText(),
                     root.get("cooldown").get(0).asInt(), root.get("summonerLevel").asInt(), root.get("range").get(0).asInt(),
-                    MAPPER.readerForListOf(String.class).readValue(root.get("modes")), deserializeSprite(root.get("image")),
-                    root.get("image").get("full").asText());
+                    MAPPER.readerForListOf(String.class).readValue(root.get("modes")), sprite,
+                    String.format("%scdn/%s/img/%s/%s", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION,
+                            sprite.getGroup(), root.get("image").get("full").asText()));
         }
     }
 
     private static Sprite deserializeSprite(JsonNode node) {
         return new Sprite(node.get("sprite").asText(), node.get("group").asText(), node.get("x").asInt(),
                 node.get("y").asInt(), node.get("w").asInt(), node.get("h").asInt());
+    }
+
+    public static class ArenaAugmentDeserializer extends JsonDeserializer<ArenaAugment> {
+
+        @Override
+        public ArenaAugment deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+            JsonNode root = jp.getCodec().readTree(jp);
+
+            return new ArenaAugment(root.get("id").asInt(), root.get("name").asText(), root.get("rarity").asInt(),
+                    root.get("tooltip").asText(), root.get("desc").asText(),
+                    "https://raw.communitydragon.org/latest/game/" + root.get("iconLarge").asText(),
+                    "https://raw.communitydragon.org/latest/game/" + root.get("iconSmall").asText(),
+                    MAPPER.readerForMapOf(Double.class).readValue(root.get("dataValues")));
+        }
+    }
+
+    public static class ChallengeDeserializer extends JsonDeserializer<Challenge> {
+
+        @Override
+        public Challenge deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+            JsonNode root = jp.getCodec().readTree(jp);
+
+            Map<RankedTier, String> levelToIconPaths = MAPPER.readerFor(TypeFactory.defaultInstance()
+                    .constructMapType(Map.class, RankedTier.class, String.class)).readValue(root.get("levelToIconPath"));
+            levelToIconPaths.entrySet().forEach(entry -> entry.setValue(String.format("%scdn/img%s", STConstants.DDRAGON_BASE_PATH, entry.getValue())));
+
+            return new Challenge(root.get("id").asInt(), root.get("name").asText(), root.get("description").asText(),
+                    root.get("shortDescription").asText(), root.get("hasLeaderboard").asBoolean(), levelToIconPaths,
+                    MAPPER.readerFor(TypeFactory.defaultInstance()
+                            .constructMapType(Map.class, RankedTier.class, Challenge.Threshold.class)).readValue(root.get("thresholds")));
+        }
     }
 }
