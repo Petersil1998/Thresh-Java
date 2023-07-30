@@ -1,14 +1,9 @@
 package net.petersil98.thresh.util;
 
 import net.petersil98.core.util.InvalidFilterException;
-import net.petersil98.stcommons.constants.STConstants;
 import net.petersil98.thresh.collection.QueueTypes;
 
 public class Util {
-
-    public static String getProfileIconURL(int profileIconId) {
-        return String.format("%scdn/%s/img/profileicon/%s.png", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION, profileIconId);
-    }
 
     public static void validateFilter(java.util.Map<String, String> filter) {
         filter.forEach((filterName, arg) -> {

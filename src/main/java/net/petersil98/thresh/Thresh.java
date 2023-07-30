@@ -14,7 +14,6 @@ import net.petersil98.thresh.model.PlayerRanks;
 import net.petersil98.thresh.model.match.MatchDetails;
 import net.petersil98.thresh.model.spectator.ActiveGame;
 import net.petersil98.thresh.util.LoLLoader;
-import net.petersil98.thresh.util.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,6 +47,5 @@ public class Thresh {
         MatchDetails details = MatchDetails.getMatchDetails("EUW1_987654321", LeagueRegion.EUROPE);
         ActiveGame game = ActiveGame.ofSummoner(Summoner.getSummonerByName("prinzessin", LeaguePlatform.EUW).getId(), LeaguePlatform.EUW);
         System.out.println(game.getSpectatorCommandWindows("C:\\"));
-        System.out.println(Util.getProfileIconURL(me.getProfileIcon()));
     }
 }

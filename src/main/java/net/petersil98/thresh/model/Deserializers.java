@@ -548,7 +548,7 @@ public class Deserializers {
             JsonNode root = jp.getCodec().readTree(jp);
 
             return new RuneStyle(root.get("id").asInt(), root.get("name").asText(),
-                    String.format("%scdn/img/%s", STConstants.DDRAGON_BASE_PATH, root.get("icon").asText()), root.get("key").asText());
+                    String.format("%s/cdn/img/%s", STConstants.DDRAGON_BASE_PATH, root.get("icon").asText()), root.get("key").asText());
         }
     }
 
@@ -559,7 +559,7 @@ public class Deserializers {
             JsonNode root = jp.getCodec().readTree(jp);
 
             return new RuneStat(root.get("id").asInt(), root.get("name").asText(),
-                    String.format("%scdn/img/%s", STConstants.DDRAGON_BASE_PATH, root.get("iconPath").asText()),
+                    String.format("%s/cdn/img/%s", STConstants.DDRAGON_BASE_PATH, root.get("iconPath").asText()),
                     root.get("shortDesc").asText(), root.get("longDesc").asText());
         }
     }
@@ -572,7 +572,7 @@ public class Deserializers {
 
             Sprite sprite = deserializeSprite(root.get("image"));
             return new net.petersil98.thresh.data.Map(root.get("MapId").asInt(), root.get("MapName").asText(),
-                    String.format("%scdn/%s/img/%s/%s", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION,
+                    String.format("%s/cdn/%s/img/%s/%s", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION,
                             sprite.getGroup(), root.get("image").get("full").asText()), sprite);
         }
     }
@@ -606,12 +606,15 @@ public class Deserializers {
                     .toList();
 
             return new Skin(root.get("id").asInt(), root.get("isBase").asBoolean(), root.get("name").asText(),
-                    "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/" +
-                            root.get("uncenteredSplashPath").asText().replace("/lol-game-data/assets/", ""),
-                    "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/" +
-                            root.get("tilePath").asText().replace("/lol-game-data/assets/", ""),
-                    "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/" +
-                            root.get("loadScreenPath").asText().replace("/lol-game-data/assets/", ""),
+                    String.format("%s/latest/plugins/rcp-be-lol-game-data/global/default/%s",
+                            STConstants.CDRAGON_BASE_PATH,
+                            root.get("uncenteredSplashPath").asText().replace("/lol-game-data/assets/", "")),
+                    String.format("%s/latest/plugins/rcp-be-lol-game-data/global/default/%s",
+                            STConstants.CDRAGON_BASE_PATH,
+                            root.get("tilePath").asText().replace("/lol-game-data/assets/", "")),
+                    String.format("%s/latest/plugins/rcp-be-lol-game-data/global/default/%s",
+                            STConstants.CDRAGON_BASE_PATH,
+                            root.get("loadScreenPath").asText().replace("/lol-game-data/assets/", "")),
                     MAPPER.readerFor(Rarity.class).readValue(root.get("rarity")),
                     root.get("isLegacy").asBoolean(), root.has("chromas") ?
                     MAPPER.readerForListOf(Chroma.class).readValue(root.get("chromas")) : null,
@@ -630,8 +633,9 @@ public class Deserializers {
                     .map(s -> new Color(Integer.parseInt(s.substring(1), 16)))
                     .toList();
             return new Chroma(root.get("id").asInt(), root.get("name").asText(null),
-                    "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/" +
-                            root.get("chromaPath").asText().replace("/lol-game-data/assets/", ""), colors);
+                    String.format("%s/latest/plugins/rcp-be-lol-game-data/global/default/%s",
+                            STConstants.CDRAGON_BASE_PATH,
+                            root.get("chromaPath").asText().replace("/lol-game-data/assets/", "")), colors);
         }
     }
 
@@ -659,7 +663,7 @@ public class Deserializers {
                     MAPPER.readerForMapOf(Float.class).readValue(root.get("stats")),
                     MAPPER.readerForListOf(String.class).readValue(root.get("tags")),
                     maps.entrySet().stream().filter(java.util.Map.Entry::getValue).map(Map.Entry::getKey).collect(Collectors.toList()),
-                    sprite, String.format("%scdn/%s/img/%s/%s", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION,
+                    sprite, String.format("%s/cdn/%s/img/%s/%s", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION,
                     sprite.getGroup(), root.get("image").get("full").asText()),
                     root.has("effect") ? MAPPER.readerForMapOf(String.class).readValue(root.get("effect")) : java.util.Map.of());
         }
@@ -676,7 +680,7 @@ public class Deserializers {
             return new SummonerSpell(root.get("key").asInt(), root.get("name").asText(), root.get("description").asText(),
                     root.get("cooldown").get(0).asInt(), root.get("summonerLevel").asInt(), root.get("range").get(0).asInt(),
                     MAPPER.readerForListOf(String.class).readValue(root.get("modes")), sprite,
-                    String.format("%scdn/%s/img/%s/%s", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION,
+                    String.format("%s/cdn/%s/img/%s/%s", STConstants.DDRAGON_BASE_PATH, STConstants.DDRAGON_VERSION,
                             sprite.getGroup(), root.get("image").get("full").asText()));
         }
     }
@@ -694,8 +698,8 @@ public class Deserializers {
 
             return new ArenaAugment(root.get("id").asInt(), root.get("name").asText(), root.get("rarity").asInt(),
                     root.get("tooltip").asText(), root.get("desc").asText(),
-                    "https://raw.communitydragon.org/latest/game/" + root.get("iconLarge").asText(),
-                    "https://raw.communitydragon.org/latest/game/" + root.get("iconSmall").asText(),
+                    STConstants.CDRAGON_BASE_PATH + "/latest/game/" + root.get("iconLarge").asText(),
+                    STConstants.CDRAGON_BASE_PATH + "/latest/game/" + root.get("iconSmall").asText(),
                     MAPPER.readerForMapOf(Double.class).readValue(root.get("dataValues")));
         }
     }
@@ -708,7 +712,7 @@ public class Deserializers {
 
             Map<RankedTier, String> levelToIconPaths = MAPPER.readerFor(TypeFactory.defaultInstance()
                     .constructMapType(Map.class, RankedTier.class, String.class)).readValue(root.get("levelToIconPath"));
-            levelToIconPaths.entrySet().forEach(entry -> entry.setValue(String.format("%scdn/img%s", STConstants.DDRAGON_BASE_PATH, entry.getValue())));
+            levelToIconPaths.entrySet().forEach(entry -> entry.setValue(String.format("%s/cdn/img%s", STConstants.DDRAGON_BASE_PATH, entry.getValue())));
 
             return new Challenge(root.get("id").asInt(), root.get("name").asText(), root.get("description").asText(),
                     root.get("shortDescription").asText(), root.get("hasLeaderboard").asBoolean(), levelToIconPaths,
