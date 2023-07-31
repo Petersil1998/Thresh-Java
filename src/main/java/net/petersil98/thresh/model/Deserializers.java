@@ -559,7 +559,10 @@ public class Deserializers {
             JsonNode root = jp.getCodec().readTree(jp);
 
             return new RuneStat(root.get("id").asInt(), root.get("name").asText(),
-                    String.format("%s/cdn/img/%s", STConstants.DDRAGON_BASE_PATH, root.get("iconPath").asText()),
+
+                    String.format("%s/latest/plugins/rcp-be-lol-game-data/global/default/%s",
+                            STConstants.CDRAGON_BASE_PATH,
+                            root.get("iconPath").asText().replace("/lol-game-data/assets/", "").toLowerCase()),
                     root.get("shortDesc").asText(), root.get("longDesc").asText());
         }
     }
@@ -608,13 +611,13 @@ public class Deserializers {
             return new Skin(root.get("id").asInt(), root.get("isBase").asBoolean(), root.get("name").asText(),
                     String.format("%s/latest/plugins/rcp-be-lol-game-data/global/default/%s",
                             STConstants.CDRAGON_BASE_PATH,
-                            root.get("uncenteredSplashPath").asText().replace("/lol-game-data/assets/", "")),
+                            root.get("uncenteredSplashPath").asText().replace("/lol-game-data/assets/", "").toLowerCase()),
                     String.format("%s/latest/plugins/rcp-be-lol-game-data/global/default/%s",
                             STConstants.CDRAGON_BASE_PATH,
-                            root.get("tilePath").asText().replace("/lol-game-data/assets/", "")),
+                            root.get("tilePath").asText().replace("/lol-game-data/assets/", "").toLowerCase()),
                     String.format("%s/latest/plugins/rcp-be-lol-game-data/global/default/%s",
                             STConstants.CDRAGON_BASE_PATH,
-                            root.get("loadScreenPath").asText().replace("/lol-game-data/assets/", "")),
+                            root.get("loadScreenPath").asText().replace("/lol-game-data/assets/", "").toLowerCase()),
                     MAPPER.readerFor(Rarity.class).readValue(root.get("rarity")),
                     root.get("isLegacy").asBoolean(), root.has("chromas") ?
                     MAPPER.readerForListOf(Chroma.class).readValue(root.get("chromas")) : null,
